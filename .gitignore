@@ -1,0 +1,6 @@
+.vs
+.vscode
+bin
+out
+numeros1M.txt
+tiempo.c
