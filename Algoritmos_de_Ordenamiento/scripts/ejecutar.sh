@@ -1,4 +1,7 @@
 #!/bin/sh
+# ejecutar.sh
+# Version 1.0 Octubre 2022
+# Autor: Darío Quiñones
 
 # Un script de shell que ejecuta todos los algoritmos compilados en el directorio bin
 # utilizanddo los primeros 100 valores del archivo de entrada numeros1M.txt y

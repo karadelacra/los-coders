@@ -1,4 +1,8 @@
 #!/bin/sh
+# compilar.sh
+# Version 1.0 Octubre 2022
+# Autor: Darío Quiñones
+
 # Un script de shell que compila todos los archivos .c en el directorio actual
 # y los guarda en el directorio bin
 
