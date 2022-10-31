@@ -1,31 +1,75 @@
+/*
+seleccion.c
+V 1.0 Octubre 2022
+Autor: Juan Molina
+
+Implementación del ordenamiento por selección en C basada en el pseudo=código
+proporcionado por el profesor. Toma n números enteros de la entrada estándar
+en la forma:
+> seleccion.exe n n0 n1 n2 n3 n4 ...  (en windows)
+Imprime estos valores de forma ordenada, junto al tiempo que tomó la ejecución
+del algoritmo.
+*/
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 void Seleccion(int *A, int n);
 
-int main()
+int main(int argc, char *argv[])
 {
-	int i, n=100;
-	int A[100] = {8176, 3, 5708, 8533, 1286, 6495, 7554, 4028, 2594, 342, 439, 2043, 6596, 9133, 3354, 9168, 1624, 1326, 4603, 3655, 2551, 8190, 6760, 4243, 448, 5277, 5246, 2187, 6583, 988, 3757, 3776, 4142, 8903, 5363, 9912, 8518, 9777, 4875, 6081, 2612, 9142, 6871, 9730, 4005, 119, 1738, 1938, 3552, 9378, 6089, 647, 7119, 7262, 612, 9139, 6435, 5576, 540, 6342, 4957, 1645, 2218, 8128, 1671, 3159, 6695, 5044, 3756, 7666, 4690, 2723, 6656, 1144, 6181, 9675, 7503, 1799, 4878, 3854, 9765, 8468, 1627, 9468, 284, 7872, 6925, 4593, 3508, 6012, 5110, 6055, 8692, 2785, 5785, 3589, 4627, 4713, 2078, 2015};
-	/*
-	n=10;
-	int A[100] = {8176, 3, 5708, 8533, 1286, 6495, 7554, 4028, 2594, 342};
-	*/
-	Seleccion(A,n);
-	
-    printf("[");
-    for (i = 0; i < n-1; i++)
-    {
-        printf("%d, ", A[i]);
-    }
-    printf("%d]\n", A[n-1]);
+	// Variables para la medición de tiempos
+	clock_t t_inicio, t_final;
+	double t_intervalo;
+	// Variables para el algoritmo
+	int i, j, n, *A;
+
+	// Recibir por argumento el tamaño de n y el valor a buscar
+	if (argc != 2)
+	{
+		printf("\nIndique el tamanio de n - Ejemplo: [user@equipo]$ %s 100\n", argv[0]);
+		exit(1);
+	}
+
+	// Tomar el argumento del main
+	n = atoi(argv[1]);
+	A = malloc(n * sizeof(int));
+	if (A == NULL)
+	{
+		printf("\nError al intentar reservar memoria para %d elementos\n", n);
+		exit(1);
+	}
+
+	// Leer de la entrada estándar los n valores y colocarlos en el arreglo de números
+	for (i = 0; i < n; i++)
+		scanf("%d", &A[i]);
+
+	// Inicia medición del tiempo
+	t_inicio = clock();
+	Seleccion(A , n);
+	t_final = clock();
+	t_intervalo = (double)(t_final - t_inicio) / (CLOCKS_PER_SEC);
+
+	printf("\nArreglo Ordenado:\n");
+	for (i = 0; i < n; i++)
+		printf("\nA[%d]=%d", i, A[i]);
+
+	printf("\n\nTiempo medido: %.8f segundos.\n", t_intervalo);
 	return 0;
 }
 
-
+/*
+void Seleccion(int *A, int n)
+Recibe:*A: Dirección al arreglo a ordenar
+		n: Tamaño del arreglo
+Realiza los cambios en el arreglo A para ordenarlo de menor a mayor
+Complejidad: O(n^2)
+*/
 void Seleccion(int *A, int n)
 {
 	int i,k,p,temp;
-	
+
 	for(k=0; k<=n-2; k++)
 	{
 		//printf("%d ",k);
