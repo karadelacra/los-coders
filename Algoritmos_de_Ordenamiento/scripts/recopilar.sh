@@ -3,7 +3,7 @@
 # Version 1.0 Octubre 2022
 # Autor: Darío Quiñones
 
-# Un script de shell que ejecuta todos los algoritmos compilados en el directorio bin
+# Un script de shell que ejecuta uno de los algoritmos compilados en el directorio bin
 # utilizanddo cantidades progresivas de valores del archivo de entrada numeros1M.txt y
 # guardando el tiempo de ejecución de cada test en el directorio out, en archivos de texto
 # con el mismo nombre que el algoritmo correspondiente.
@@ -13,7 +13,7 @@ CANTIDADES=(500 1000 5000 10000 50000 100000 200000 500000 1000000)
 
 
 # Algoritmo a utilizar
-ALGORITMO=rapido
+ALGORITMO=merge
 
 BIN_DIR=bin # Directorio de binarios
 SRC=numeros1M.txt # Archivo de entrada
