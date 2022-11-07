@@ -1,7 +1,7 @@
 /*
 seleccion.c
 V 1.0 Octubre 2022
-Autor: Juan Molina
+Autor: Juan L. Molina Acuña
 
 Implementación del ordenamiento por selección en C basada en el pseudo=código
 proporcionado por el profesor. Toma n números enteros de la entrada estándar
