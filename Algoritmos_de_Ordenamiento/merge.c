@@ -2,6 +2,13 @@
 merge.c
 V 1.0 Noviembre 2022
 Autor: Juan L. Molina Acuña
+
+Implementación del ordenamiento por mezcla en C basada en el pseudo-código
+proporcionado por el profesor. Toma n números enteros de la entrada estándar
+en la forma:
+> mezcla.exe n n0 n1 n2 n3 n4 ...  (en windows)
+Imprime estos valores de forma ordenada, junto al tiempo que tomó la ejecución
+del algoritmo.
 */
 
 #include <stdio.h>
@@ -94,11 +101,16 @@ Recibe:
 	l: longitud de arreglo
 
 */
-
 void Merge(int A[], int p, int q, int r)
 {
 	int k, l=r-p+1, i=p, j=q+1;
-	int C[l];
+	//int C[l];
+	int *C = malloc(l * sizeof(int));
+	if (C == NULL)
+	{
+		printf("\nError al intentar reservar memoria para %d elementos\n", l);
+		exit(1);
+	}
 
 	for(k=0;k<l;k++)
 	{
@@ -131,4 +143,6 @@ void Merge(int A[], int p, int q, int r)
 	{
 		A[k]=C[i];
 	}
+
+	free(C);
 }
