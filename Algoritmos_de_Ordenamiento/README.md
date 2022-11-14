@@ -1,6 +1,6 @@
 # Proyecto 1: Algoritmos de Ordenamiento
 
-Centrado en seis diferentes algoritmos de ordenamiento comunes. Cada algoritmo esta contenido en su propio archivo independiente, para facilitar su uso están presentes scripts para el compilado y la ejecución de los archivos.
+Centrado en seis diferentes algoritmos de ordenamiento comunes (bubble, inserción, selección, merge, quick y shell). Cada algoritmo esta contenido en su propio archivo independiente, para facilitar su uso están presentes scripts para el compilado y la ejecución de los archivos.
 
 ## Requisitos
 
@@ -40,7 +40,7 @@ Los archivos quedan compilados dentro de una carpeta de binarios `/bin/`.
 
 Hay dos scripts para el uso de los algoritmos, ambos asumen que el proyecto tiene un set de números aleatorios con el nombre de `numeros1M.txt` en la carpeta del proyecto.
 
-Para ejecutar todos los algoritmos secuencialmente con un set de 100 valores numéricos tomados del archivo se debe ejecutar el script `ejecutar.sh` desde la raíz del proyecto.
+Para ejecutar todos los algoritmos secuencialmente con un conjunto de 100 valores numéricos tomados del archivo se debe ejecutar el script `ejecutar.sh` desde la raíz del proyecto.
 
 En Windows:
 
@@ -56,22 +56,12 @@ bash ./scripts/ejecutar.sh
 
 Los resultados quedan guardados dentro de la carpeta `/out/`
 
-### Recolección de datos (Work In Progress)
+## Recolección de datos
 
 Para recolectar los datos de cada algoritmo individualmente se utiliza el script para guardar los tiempos del algoritmo dado con intervalos progresivamente mayores de números.
 
-## Algoritmos (Work In Progress)
+Por el momento solo están disponibles los scripts de recopilado para linux. Son dos archivos:
 
-(Descripciones breves)
+`recopilar.sh` utiliza una variable dentro del archivo para ejecutar un algoritmo previamente compilado con una serie de cantidades de valores distintas para ordenar: (500, 1000, 5000, 10000, 50000, 100000, 200000, 500000, 1000000). Recupera los tiempos de ejecución de cada algoritmo y guarda en un archivo de la forma `tiempos-algoritmo.csv`.
 
-### Bubble Sort
-
-### Insertion Sort
-
-### Selection Sort
-
-### Merge Sort
-
-### Quick Sort
-
-### Shell Sort
+`recopilar-todo.sh` realiza la misma acción que `recopilar.sh` pero sobre todos los algoritmos compilados dentro de `/bin/`

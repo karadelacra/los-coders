@@ -24,7 +24,7 @@ TIEMPOS=out/tiempos-$ALGORITMO.csv # Archivo de tiempos recolectados
 
 # Comprobar que el algoritmo existe
 if [ ! -f $BIN_DIR/$ALGORITMO ]; then
-    echo "El algoritmo $ALGORITMO no existe, utilice el script compilar.sh para compilar los algoritmos"
+    echo "El ejecutable $ALGORITMO no existe, utilice el script compilar.sh para compilar los algoritmos"
     echo "'bash scripts/compilar.sh' para compilar los algoritmos desde la raíz del proyecto"
     exit 1
 fi
