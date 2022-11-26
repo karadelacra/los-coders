@@ -2,8 +2,6 @@
 
 Enfocado en el uso de las pilas dinámicas y estáticas para la evaluación de expresiones aritméticas. El programa utiliza pilas para corroborar la utilización de paréntesis, para la conversión de una expresión infija, a una postfija, y para evaluar la expresión.
 
----
-
 ## Requisitos
 
 Se utilizó para la compilación [GCC](https://gcc.gnu.org/) tanto en Windows como Linux.
@@ -29,8 +27,6 @@ Y de forma similar están disponible un paquetes con python en muchas distribuci
 ```bash
 sudo apt install python3
 ```
-
----
 
 ## Compilación
 
@@ -61,8 +57,6 @@ Para pilas dinámicas (en Linux)
 ```bash
 gcc -o output main.c pilas/pila-dinamica.c
 ```
-
----
 
 ## Ejecución
 
