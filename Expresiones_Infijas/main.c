@@ -30,8 +30,9 @@ Para compilar:
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
+#include <string.h> // Para usar strlen()
+#include <stdbool.h> // Para usar bool estándar
+#include <math.h> // Para usar pow() y valores NaN
 
 // Dependiendo del tipo de pilas que se usen, se incluye una u otra librería
 #include "pilas/pila-din.h"
@@ -40,43 +41,50 @@ Para compilar:
 
 bool parentesis_correctos(char *expresion);
 bool mayor_precedencia(char a, char b);
-char *reestructurar(char *expresion);
+void reestructurar(char *expresion, char *expresion_postfija);
 void consultar_incognitas(char *expresion, double *incognitas);
 double evaluar(char *expresion, double *incognitas);
 
 
 int main(int argc, char *argv[])
 {
-    char *expresion;
+    char *expresion, *expresion_postfija;
     double incognitas[26];
 
     // Recibir por argumento la expresión a evaluar
     if (argc != 2)
     {
-        printf("\nIndique la expresion a evaluar - Ejemplo: \"%s (2+5)^2*3\"", argv[0]);
+        printf("\nIndique la expresion a evaluar \n\tEjemplo: \'%s \"(2+5)^2*3\"\'\n", argv[0]);
         exit(1);
     }
 
     expresion = argv[1];
     if (expresion == NULL)
     {
-        printf("\nError al asignar la expresión %s", expresion);
+        printf("\nError al asignar la expresión");
 		exit(1);
     }
 
     printf("\nExpresion: %s\n", expresion);
     if (parentesis_correctos(expresion))
     {
-        printf("\nLos parentesis estan correctos");
-        reestructurar(expresion);
-        printf("\nExpresion reestructurada: %s", expresion);
+        printf("Los parentesis estan correctos\n");
+
+        // Reestructurar la expresión
+        expresion_postfija = (char *) malloc(strlen(expresion) * sizeof(char));
+        reestructurar(expresion, expresion_postfija);
+        printf("Expresion reestructurada: %s\n", expresion_postfija);
+
         consultar_incognitas(expresion, incognitas);
-        printf("\nResultado: %.4lf\n", evaluar(expresion, incognitas));
+        printf("\nResultado: %.4lf\n", evaluar(expresion_postfija, incognitas));
     }
     else
     {
-        printf("\nLos parentesis no estan balanceados\n");
+        printf("Los parentesis no estan correctos\n");
+        exit(1);
     }
+
+    return 0;
 }
 
 /*
@@ -114,7 +122,6 @@ bool parentesis_correctos(char *expresion)
             {
                 Pop(&s);
             }
-            Pop(&s);
         }
     }
     // Si la pila no está vacía, entonces no están balanceados
@@ -184,15 +191,13 @@ bool mayor_igual_precedencia(char a, char b){
 }
 
 /*
-char *reestructurar(char *expresion);
+void *reestructurar(char *expresion, char *expresion_postfija);
 Recibe: *expresion: arreglo de caracteres a modificar
+        *expresion_postfija: arreglo de caracteres donde se guardará la expresión postfija
 Retorna: Un apuntador al un arreglo de caracteres modificado
 */
-char *reestructurar(char *expresion){
-    char *expresion_postfija;
-    expresion_postfija = (char *)malloc(sizeof(char) * strlen(expresion));
-    printf("\nExpresion: %s", expresion);
-    return expresion_postfija;
+void reestructurar(char *expresion, char *expresion_postfija){
+    return;
 }
 
 /*
@@ -202,11 +207,33 @@ Recibe: *expresion: arreglo de caracteres a evaluar
         incógnitas.
 Retorna: Un arreglo con los valores de las incognitas.
 Escanea de la entrada estándar los valores de las incógnitas presentes en la
-expresión.
+expresión en orden alfabético.
 */
 void consultar_incognitas(char *expresion, double *incognitas){
-    printf("Expresion: %s\n", expresion);
-    printf("Incognitas: %lf\n", incognitas[0]);
+    int i, len;
+    for (i = 0; i < 26; i++)
+    {
+        // Para cada incognita, se le asigna un valor que no es un número
+        incognitas[i] = __builtin_nanf64("");
+    }
+
+    len = strlen(expresion);
+    for (i = 0; i < 26 && i < len; i++)
+    {
+        // Si el caracter es una letra, y esa letra no ha sido asignada
+        // un valor, se le pide al usuario que ingrese un valor
+        if (expresion[i] >= 'A' && expresion[i] <= 'Z' && isnan(incognitas[expresion[i] - 'A'])){
+            {
+                printf("Valor de %c: ", expresion[i]);
+                scanf("%lf", &incognitas[expresion[i] - 'A']);
+                if (isnan(incognitas[expresion[i] - 'A']))
+                {
+                    printf("Valor no válido\n");
+                    exit(1);
+                }
+            }
+        }
+    }
     return;
 }
 
@@ -218,7 +245,5 @@ Retorna: el resultado de evaluar la expresión recibida.
 */
 double evaluar(char *expresion, double *incognitas){
     double resultado = 0;
-    printf("Expresion: %s\n", expresion);
-    printf("Incognitas: %lf\n", incognitas[0]);
     return resultado;
 }
