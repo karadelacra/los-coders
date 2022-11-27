@@ -138,7 +138,7 @@ bool parentesis_correctos(char *expresion)
 bool mayor_precedencia(char a, char b);
 Recibe: a: caracter de un operador aritmético
         b: caracter de otro operador aritmético
-Retorna: True si a > b
+Retorna: True si a >= b 
          False si a < b
 Para simplificar las comparaciones entre operadores matemáticos.
 */
@@ -150,13 +150,16 @@ bool mayor_igual_precedencia(char a, char b){
     if (a != b) {
         switch (a)
         {
+            //potencia máxima prioridad
         case '^':
             precedencia_a = 3;
             break;
+            //mult y división prioridad media
         case '*':
         case '/':
             precedencia_a = 2;
             break;
+            //suma y resta prioridad baja
         case '+':
         case '-':
             precedencia_a = 1;
@@ -203,12 +206,14 @@ void reestructurar(char *expresion, char *expresion_postfija){
 
     Initialize(&s);
     len = strlen(expresion);
+    //Definimos una expresión por defecto vacía para la expresión postfija
+    expresion_postfija[0]='\0';
     for (i = 0; i < len; i++)
     {
         // Si es un número, se agrega a la expresión postfija
         if (expresion[i] >= '0' && expresion[i] <= '9')
         {
-            // Si el número anterior era un número, se agrega un espacio
+            // Si el valor anterior era un número, se agrega un espacio
             if (j > 0 && expresion_postfija[j-1] >= '0' && expresion_postfija[j-1] <= '9')
             {
                 expresion_postfija[j] = ' ';
@@ -234,7 +239,7 @@ void reestructurar(char *expresion, char *expresion_postfija){
         // Si es un operador, se agrega a la pila
         else if (expresion[i] == '+' || expresion[i] == '-' || expresion[i] == '*' || expresion[i] == '/' || expresion[i] == '^')
         {
-            // Si la pila está vacía, se agrega el operador
+            // Si la pila está vacía, se agrega el operador a la misma.
             if (Empty(&s))
             {
                 e.dato = expresion[i];
@@ -288,7 +293,8 @@ void reestructurar(char *expresion, char *expresion_postfija){
         expresion_postfija[j] = Pop(&s).dato;
         j++;
     }
-    expresion_postfija[len] = '\0';
+    j++;
+    expresion_postfija[j] = '\0';
     Destroy(&s);
     return;
 }
@@ -338,5 +344,99 @@ Retorna: el resultado de evaluar la expresión recibida.
 */
 double evaluar(char *expresion, double *incognitas){
     double resultado = 0;
+    pila s;
+    elemento e;
+    int i,j=0,len;
+    char *buffer, *ptr;
+    double valor1, valor2;
+    double operaciones;
+
+    len = strlen(expresion);
+
+    Initialize(&s);
+    for (i=0;i<len;i++)
+    {
+        // Si es un número se agregan al buffer todos sus caracteres.
+        if (expresion[i] >= '0' && expresion[i] <= '9')
+        {
+            buffer = (char *)malloc(101*sizeof(char));
+            buffer[j] = expresion[i];
+            j++;
+            // Mientras haya un valor siguiente, y ese sea parte del número
+            while (i+1 < len && ((expresion[i+1] >= '0' && expresion[i+1] <= '9') || expresion[i+1] == '.'))
+            {
+                i++;
+                // Se agrega el siguiente valor a la expresión postfija
+                buffer[j] = expresion[i];
+                j++;
+            }
+            buffer[j]='\0';
+            //printf("buffer = %s\n",buffer);
+            j=0;
+            e.dato=buffer;
+            Push(&s,e);
+        }
+        // Si es una incógnita, procedemos a sustituir el valor con lo guardado en el arreglo de incógnitas
+        else if (expresion[i] >= 'A' && expresion[i] <= 'Z')
+        {
+            buffer = (char *)malloc(101*sizeof(char));
+            sprintf(buffer,"%lf",incognitas[expresion[i]-'A']);
+            e.dato = buffer;
+            Push(&s,e);
+        }
+
+        // Si es un operador, procede a realizarse la operación.
+        else if (expresion[i] == '+' || expresion[i] == '-' || expresion[i] == '*' || expresion[i] == '/' || expresion[i] == '^')
+        {
+            // Si la pila no está vacía, realizamos la operación con los dos últimos valores.
+            if (!Empty(&s))
+            {
+                ptr = (Pop(&s).dato);
+                valor1=atof(ptr);
+                free(ptr);
+            }
+            if (!Empty(&s))
+            {
+                ptr = (Pop(&s).dato);
+                valor2=atof(ptr);
+                free(ptr);
+            }
+            switch (expresion[i])
+            {
+                //potencia máxima prioridad
+                case '^':
+                    operaciones = pow(valor2,valor1);
+                    break;
+                //mult y división prioridad media
+                case '*':
+                    operaciones = valor2*valor1;
+                    break;
+                case '/':
+                    operaciones = valor2/valor1;
+                    break;
+                //suma y resta prioridad baja
+                case '+':
+                    operaciones = valor2 + valor1;
+                    break;
+                case '-':
+                    operaciones = valor2 - valor1;
+                    break;
+                default:
+                    break;
+            }
+            buffer = (char *)malloc(101*sizeof(char));
+            sprintf(buffer,"%lf",operaciones);
+            //printf("buffer = %s\n",buffer);
+            e.dato=buffer;
+            Push(&s,e);
+        }
+    }
+    if(!Empty(&s))
+    {
+        ptr=Pop(&s).dato;
+        resultado=atof(ptr);
+        free(ptr);
+    }
+    Destroy(&s);
     return resultado;
 }
