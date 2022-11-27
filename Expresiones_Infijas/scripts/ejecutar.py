@@ -9,9 +9,12 @@ import os
 
 def main():
     # Sisterma operativo
-    SistemaOperativo = os.uname().sysname
-
-    ejecutable = "bin/Expresiones_Infijas"
+    SistemaOperativo = os.name
+    if SistemaOperativo == "nt":
+        ejecutable = "bin\Expresiones_Infijas.exe"
+    elif SistemaOperativo == "posix":
+        ejecutable = "bin/Expresiones_Infijas"
+   
     # Comprobar que el ejecutable existe
     if not os.path.exists(ejecutable):
         # Si no existe, compilar el codigo fuente
@@ -48,14 +51,17 @@ def main():
     }
 
     # Directorio donde se encuentran los test cases
-    os.system("mkdir -p out")
-
+    if SistemaOperativo == "posix":
+        os.system("mkdir -p out") 
+    elif SistemaOperativo == "nt":
+        os.system("mkdir out")
     for expresion in expresiones:
         print(f"Probando caso: {expresion}")
 
         # Escribir los valores de las incognitas en un archivo en el orden en que aparecen
         # Es muy similar a el escaneo de los valores de las incognitas en el programa
         valores_asignados = [False for _ in range(26)]
+        
         with open("out/valores.txt", "w") as archivo:
             for i in range(len(expresion)):
                 if expresion[i].isalpha() and not valores_asignados[ord(expresion[i]) - ord("A")]:
@@ -63,15 +69,15 @@ def main():
                     valores_asignados[ord(expresion[i]) - ord("A")] = True
 
         # Ejecutar el programa con los valores de las incognitas
-        if SistemaOperativo == "Linux":
-            os.system(f"./{ejecutable} '{expresion}' < ./out/valores.txt")
+        if SistemaOperativo == "posix":
+            os.system(f"./{ejecutable} \"{expresion}\" < ./out/valores.txt")
         else:
-            os.system(f"{ejecutable}.exe '{expresion} < out/valores.txt")
+            os.system(f"{ejecutable} \"{expresion}\" < out/valores.txt")
 
         print()
 
     # Borrar el archivo de valores de incognitas
     # os.system("rm out/valores.txt")
-
+    # ¶╣¶╣¶╣¶╣¶╣¶╣¶╣¶╣¶╣¶╣¶╣¶╣¶╣¶╣¶╣¶╣¶╣¶╣
 if __name__ == "__main__":
     main()

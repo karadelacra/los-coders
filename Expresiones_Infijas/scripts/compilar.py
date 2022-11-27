@@ -16,10 +16,16 @@ librerias = "pilas/pila-dinamica.c"
 
 def main():
     # # sistema operativo
-    # so = os.uname().sysname
+    SistemaOperativo = os.name
 
     # Compilar el codigo fuente
     compilador = "gcc"
+   
+    if SistemaOperativo == "posix":
+        if not os.system("which gcc"):
+            print("El compilador gcc no existe") 
+            exit(1)
+
 
     # Opciones extra para el compilador
     # -std=c99: para que el compilador use el estandar C99
@@ -36,14 +42,13 @@ def main():
     if not os.path.exists("bin"):
         os.mkdir("bin")
 
-    # Asegurarse que el gcc se encuentra instalado
-    if not os.system("which gcc"):
-        # Compilar el codigo fuente
-        print("Compilando el codigo fuente...")
-        print(f"{compilador} {flags} {output} main.c {librerias}")
-        os.system(f"{compilador} {flags} {output} main.c {librerias}")
-    else:
-        print("El compilador gcc no se encuentra instalado")
+
+    
+    # Compilar el codigo fuente
+    print("Compilando el codigo fuente...")
+    print(f"{compilador} {flags} {output} main.c {librerias}")
+    os.system(f"{compilador} {flags} {output} main.c {librerias}")
+
 
 # Si este script es ejecutado, ejecutar la funcion main
 if __name__ == "__main__":
