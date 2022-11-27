@@ -1,6 +1,6 @@
 # compilar.py
 # Version 1.0 22 de Noviembre 2022
-# Autor:
+# Autores: Darío Quiñones, Karel R. Padilla
 #
 # Descripcion: Este programa es un script que le manda
 # diferentes test cases al programa de Expresiones Infijas
@@ -14,7 +14,7 @@ def main():
         ejecutable = "bin\Expresiones_Infijas.exe"
     elif SistemaOperativo == "posix":
         ejecutable = "bin/Expresiones_Infijas"
-   
+
     # Comprobar que el ejecutable existe
     if not os.path.exists(ejecutable):
         # Si no existe, compilar el codigo fuente
@@ -27,7 +27,7 @@ def main():
         "()",
         "(())",
         "()(())",
-        "(()",
+        ")(()",
         "())",
         # incógnitas
         "A+B",
@@ -38,6 +38,15 @@ def main():
         "C*(A+B)",
         "B*(C+A)^D",
         "F*(G+A)^D+E",
+        # Incógnitas con paréntesis y números
+        "B+(F*C)+2",
+        "C*(A+5.3*3-(5))",
+        "(1+2)^3/4+5+6+7+8+9+10",
+        "5*(C+(4*(5)*A)^D",
+        "5*A + 3*B + 2*C + 1*D",
+        # La legendaria chicharronera
+        "(0-B-((B^2)-4*A*C)^(1/2))/(2*A)",
+        "(0-B+((B^2)-4*A*C)^(1/2))/(2*A)"
     ]
 
     valores_de_incognitas = {
@@ -51,17 +60,16 @@ def main():
     }
 
     # Directorio donde se encuentran los test cases
-    if SistemaOperativo == "posix":
-        os.system("mkdir -p out") 
-    elif SistemaOperativo == "nt":
-        os.system("mkdir out")
+    if not os.path.exists("out"):
+        os.mkdir("out")
+
     for expresion in expresiones:
         print(f"Probando caso: {expresion}")
 
         # Escribir los valores de las incognitas en un archivo en el orden en que aparecen
         # Es muy similar a el escaneo de los valores de las incognitas en el programa
         valores_asignados = [False for _ in range(26)]
-        
+
         with open("out/valores.txt", "w") as archivo:
             for i in range(len(expresion)):
                 if expresion[i].isalpha() and not valores_asignados[ord(expresion[i]) - ord("A")]:

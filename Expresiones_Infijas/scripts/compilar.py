@@ -1,6 +1,6 @@
 # compilar.py
 # Version 1.0 22 de Noviembre 2022
-# Autor:
+# Autores: Darío Quiñones, Karel R. Padilla
 #
 # Descripcion: Este programa es un script que compila el codigo fuente del proyecto
 #              Expresiones Infijas, el cual se encuentra en el directorio encima de
@@ -20,12 +20,6 @@ def main():
 
     # Compilar el codigo fuente
     compilador = "gcc"
-   
-    if SistemaOperativo == "posix":
-        if not os.system("which gcc"):
-            print("El compilador gcc no existe") 
-            exit(1)
-
 
     # Opciones extra para el compilador
     # -std=c99: para que el compilador use el estandar C99
@@ -43,7 +37,6 @@ def main():
         os.mkdir("bin")
 
 
-    
     # Compilar el codigo fuente
     print("Compilando el codigo fuente...")
     print(f"{compilador} {flags} {output} main.c {librerias}")

@@ -40,7 +40,7 @@ Para compilar:
 
 
 bool parentesis_correctos(char *expresion);
-bool mayor_precedencia(char a, char b);
+bool mayor_igual_precedencia(char a, char b);
 void reestructurar(char *expresion, char *expresion_postfija);
 void consultar_incognitas(char *expresion, double *incognitas);
 double evaluar(char *expresion, double *incognitas);
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
         printf("Los parentesis estan correctos\n");
 
         // Reestructurar la expresión
-        expresion_postfija = (char *) malloc(strlen(expresion) * sizeof(char));
+        expresion_postfija = (char *) malloc((int)(strlen(expresion) * sizeof(char) * 1.5));
         reestructurar(expresion, expresion_postfija);
         printf("Expresion reestructurada: %s\n", expresion_postfija);
 
@@ -182,7 +182,7 @@ bool mayor_igual_precedencia(char a, char b){
             precedencia_b = 0;
             break;
         }
-        resultado = precedencia_a > precedencia_b;
+        resultado = precedencia_a >= precedencia_b;
     }
     else{
         resultado = true;
@@ -197,6 +197,99 @@ Recibe: *expresion: arreglo de caracteres a modificar
 Retorna: Un apuntador al un arreglo de caracteres modificado
 */
 void reestructurar(char *expresion, char *expresion_postfija){
+    pila s;
+    elemento e;
+    int len, i = 0, j = 0;
+
+    Initialize(&s);
+    len = strlen(expresion);
+    for (i = 0; i < len; i++)
+    {
+        // Si es un número, se agrega a la expresión postfija
+        if (expresion[i] >= '0' && expresion[i] <= '9')
+        {
+            // Si el número anterior era un número, se agrega un espacio
+            if (j > 0 && expresion_postfija[j-1] >= '0' && expresion_postfija[j-1] <= '9')
+            {
+                expresion_postfija[j] = ' ';
+                j++;
+            }
+            expresion_postfija[j] = expresion[i];
+            j++;
+            // Mientras haya un valor siguiente, y ese sea parte del número
+            while (i+1 < len && ((expresion[i+1] >= '0' && expresion[i+1] <= '9') || expresion[i+1] == '.'))
+            {
+                i++;
+                // Se agrega el siguiente valor a la expresión postfija
+                expresion_postfija[j] = expresion[i];
+                j++;
+            }
+        }
+        // Si es una incógnita, se agrega a la expresión postfija
+        else if (expresion[i] >= 'A' && expresion[i] <= 'Z')
+        {
+            expresion_postfija[j] = expresion[i];
+            j++;
+        }
+        // Si es un operador, se agrega a la pila
+        else if (expresion[i] == '+' || expresion[i] == '-' || expresion[i] == '*' || expresion[i] == '/' || expresion[i] == '^')
+        {
+            // Si la pila está vacía, se agrega el operador
+            if (Empty(&s))
+            {
+                e.dato = expresion[i];
+                Push(&s, e);
+            }
+            // Si la pila no está vacía, se compara la precedencia del operador
+            // con el operador en la cima de la pila
+            else
+            {
+                // Si el operador en la cima de la pila tiene mayor o igual
+                // precedencia se agrega a la expresión postfija
+                while (!Empty(&s) && mayor_igual_precedencia(Top(&s).dato, expresion[i]))
+                {
+                    expresion_postfija[j] = Pop(&s).dato;
+                    j++;
+                }
+                // Si el operador en la cima de la pila tiene menor precedencia
+                // se agrega a la pila
+                e.dato = expresion[i];
+                Push(&s, e);
+            }
+        }
+        // Si es un parentesis de apertura, se agrega a la pila
+        else if (expresion[i] == '(')
+        {
+            e.dato = expresion[i];
+            Push(&s, e);
+        }
+        // Si es un parentesis de cierre, se sacan los operadores de la pila
+        // hasta encontrar un parentesis de apertura
+        else if (expresion[i] == ')')
+        {
+            while (Top(&s).dato != '(')
+            {
+                expresion_postfija[j] = Top(&s).dato;
+                j++;
+                Pop(&s);
+            }
+            Pop(&s);
+        }
+        // // Imprime la cima de la pila
+        // if (!Empty(&s))
+        //     printf("Cima de la pila: %c\n", Top(&s).dato);
+        // else
+        //     printf("Cima de la pila: NULL\n");
+    }
+
+    // Se sacan los operadores de la pila
+    while (!Empty(&s))
+    {
+        expresion_postfija[j] = Pop(&s).dato;
+        j++;
+    }
+    expresion_postfija[len] = '\0';
+    Destroy(&s);
     return;
 }
 
@@ -214,11 +307,11 @@ void consultar_incognitas(char *expresion, double *incognitas){
     for (i = 0; i < 26; i++)
     {
         // Para cada incognita, se le asigna un valor que no es un número
-        incognitas[i] = __builtin_nanf64("");
+        incognitas[i] = 0.0/0.0;
     }
 
     len = strlen(expresion);
-    for (i = 0; i < 26 && i < len; i++)
+    for (i = 0; i < len; i++)
     {
         // Si el caracter es una letra, y esa letra no ha sido asignada
         // un valor, se le pide al usuario que ingrese un valor
