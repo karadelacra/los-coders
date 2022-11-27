@@ -371,7 +371,7 @@ double evaluar(char *expresion, double *incognitas){
                 j++;
             }
             buffer[j]='\0';
-            //printf("buffer = %s\n",buffer);
+            printf("buffer = %s\n",buffer);
             j=0;
             e.dato=buffer;
             Push(&s,e);
@@ -426,7 +426,7 @@ double evaluar(char *expresion, double *incognitas){
             }
             buffer = (char *)malloc(101*sizeof(char));
             sprintf(buffer,"%lf",operaciones);
-            //printf("buffer = %s\n",buffer);
+            printf("buffer = %s\n",buffer);
             e.dato=buffer;
             Push(&s,e);
         }

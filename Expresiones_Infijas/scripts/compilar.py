@@ -27,8 +27,8 @@ def main():
     # -pedantic: para que el compilador muestre warnings para adherirse al estandar ansi C
     # -g: para que el compilador genere informacion para el debugger
     # -lm: para que el compilador linkee con la libreria matematica
-    flags = "-std=c99 -Wall -Wextra -pedantic -g -lm"
-
+    # flags = "-std=c99 -Wall -Wextra -pedantic -g -lm"
+    flags = "-std=c99 -lm -w"
     # librerias = "pilas/pila-estatica.c"
     output = "-o bin/Expresiones_Infijas"
 
