@@ -6,7 +6,7 @@ typedef char boolean;
 typedef struct elemento
 {
 	//Lo que el usuario guste
-    char dato;
+    char *dato;
 } elemento;
 
 typedef struct nodo

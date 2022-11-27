@@ -11,8 +11,8 @@ import os
 
 # Dependiendo si se utilizan librerías de la pila dinámica o estática
 # Colocado aquí para que sea más fácil cambiarlo
-librerias = "pilas/pila-dinamica.c"
-# librerias = "pilas/pila_estatica.c"
+# librerias = "pilas/pila-dinamica.c"
+librerias = "pilas/pila-estatica.c"
 
 def main():
     # # sistema operativo
@@ -28,7 +28,7 @@ def main():
     # -g: para que el compilador genere informacion para el debugger
     # -lm: para que el compilador linkee con la libreria matematica
     # flags = "-std=c99 -Wall -Wextra -pedantic -g -lm"
-    flags = "-std=c99 -lm -w"
+    flags = "-std=c99 -w"
     # librerias = "pilas/pila-estatica.c"
     output = "-o bin/Expresiones_Infijas"
 
@@ -39,8 +39,8 @@ def main():
 
     # Compilar el codigo fuente
     print("Compilando el codigo fuente...")
-    print(f"{compilador} {flags} {output} main.c {librerias}")
-    os.system(f"{compilador} {flags} {output} main.c {librerias}")
+    print(f"{compilador} {flags} {output} main.c -lm {librerias}")
+    os.system(f"{compilador} {flags} {output} main.c -lm {librerias}")
 
 
 # Si este script es ejecutado, ejecutar la funcion main

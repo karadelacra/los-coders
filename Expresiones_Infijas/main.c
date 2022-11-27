@@ -3,7 +3,8 @@ main.c
 V 1.0 Noviembre 2022
 Autores:
     Darío Quiñones
-    et al.
+    Juan Luis Molina
+    Karel Román Padilla
 
 Evaluador de expresiones infijas en C. Toma una expresión escrita en notación
 infija, la convierte a postfija y la evalúa. Toma la expresión como parámetro
@@ -34,9 +35,10 @@ Para compilar:
 #include <stdbool.h> // Para usar bool estándar
 #include <math.h> // Para usar pow() y valores NaN
 
+
 // Dependiendo del tipo de pilas que se usen, se incluye una u otra librería
-#include "pilas/pila-din.h"
-// #include "pilas/pila-est.h"
+// #include "pilas/pila-din.h"
+#include "pilas/pila-est.h"
 
 
 bool parentesis_correctos(char *expresion);
@@ -52,9 +54,14 @@ int main(int argc, char *argv[])
     double incognitas[26];
 
     // Recibir por argumento la expresión a evaluar
-    if (argc != 2)
+    if (argc < 2)
     {
         printf("\nIndique la expresion a evaluar \n\tEjemplo: \'%s \"(2+5)^2*3\"\'\n", argv[0]);
+        exit(1);
+    }
+    else if (argc > 2)
+    {
+        printf("\nDemasiados argumentos. Solo se espera un argumento, si la ecuación contiene\n espacios, encerrarla entre comillas dobles.\n");
         exit(1);
     }
 
@@ -76,7 +83,7 @@ int main(int argc, char *argv[])
         printf("Expresion reestructurada: %s\n", expresion_postfija);
 
         consultar_incognitas(expresion, incognitas);
-        printf("\nResultado: %.4lf\n", evaluar(expresion_postfija, incognitas));
+        printf("\nResultado: %lf\n", evaluar(expresion_postfija, incognitas));
     }
     else
     {
@@ -138,7 +145,7 @@ bool parentesis_correctos(char *expresion)
 bool mayor_precedencia(char a, char b);
 Recibe: a: caracter de un operador aritmético
         b: caracter de otro operador aritmético
-Retorna: True si a >= b 
+Retorna: True si a >= b
          False si a < b
 Para simplificar las comparaciones entre operadores matemáticos.
 */
@@ -313,7 +320,7 @@ void consultar_incognitas(char *expresion, double *incognitas){
     for (i = 0; i < 26; i++)
     {
         // Para cada incognita, se le asigna un valor que no es un número
-        incognitas[i] = 0.0/0.0;
+        incognitas[i] = 0.0/0.0; // NaN
     }
 
     len = strlen(expresion);
@@ -359,6 +366,7 @@ double evaluar(char *expresion, double *incognitas){
         // Si es un número se agregan al buffer todos sus caracteres.
         if (expresion[i] >= '0' && expresion[i] <= '9')
         {
+            j=0;
             buffer = (char *)malloc(101*sizeof(char));
             buffer[j] = expresion[i];
             j++;
@@ -371,8 +379,7 @@ double evaluar(char *expresion, double *incognitas){
                 j++;
             }
             buffer[j]='\0';
-            printf("buffer = %s\n",buffer);
-            j=0;
+            // printf("buffer = %s\n",buffer);
             e.dato=buffer;
             Push(&s,e);
         }
@@ -403,18 +410,15 @@ double evaluar(char *expresion, double *incognitas){
             }
             switch (expresion[i])
             {
-                //potencia máxima prioridad
                 case '^':
                     operaciones = pow(valor2,valor1);
                     break;
-                //mult y división prioridad media
                 case '*':
                     operaciones = valor2*valor1;
                     break;
                 case '/':
                     operaciones = valor2/valor1;
                     break;
-                //suma y resta prioridad baja
                 case '+':
                     operaciones = valor2 + valor1;
                     break;
@@ -426,7 +430,7 @@ double evaluar(char *expresion, double *incognitas){
             }
             buffer = (char *)malloc(101*sizeof(char));
             sprintf(buffer,"%lf",operaciones);
-            printf("buffer = %s\n",buffer);
+            // printf("buffer = %s\n",buffer);
             e.dato=buffer;
             Push(&s,e);
         }
