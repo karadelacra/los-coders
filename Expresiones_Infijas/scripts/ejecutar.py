@@ -26,20 +26,20 @@ def main():
         # Paréntesis
         "()",
         "(())",
-        "()(())",
+        "( ) (())",
         ")(()",
         "())",
         # incógnitas
         "A+B",
-        "B*A+A",
-        "B+A*D",
+        "B*A +A",
+        "B +A*D",
         # Incógnitas con paréntesis
         "B+(F*C)",
-        "C*(A+B)",
+        "C*(A+B )",
         "B*(C+A)^D",
         "F*(G+A)^D+E",
         # Incógnitas con paréntesis y números
-        "B+(F*C)+2",
+        "B+(F*C)+ 2",
         "C*(A+5.3*3-(5))",
         "(1+2)^3/4+5+6+7+8+9+10",
         "5*(C+(4*(5)*A)^D",
@@ -50,9 +50,9 @@ def main():
     ]
 
     valores_de_incognitas = {
-        "A": 1.5,
-        "B": -2,
-        "C": 0.0,
+        "A": 0.5,
+        "B": -1,
+        "C": -3,
         "D": 4,
         "E": 5,
         "F": 6,
@@ -72,7 +72,9 @@ def main():
 
         with open("out/valores.txt", "w") as archivo:
             for i in range(len(expresion)):
+                # Si el caracter es una incognita, y no se ha asignado un valor a esa incognita
                 if expresion[i].isalpha() and not valores_asignados[ord(expresion[i]) - ord("A")]:
+                    # Lo escribimos en el archivo
                     archivo.write(f"{valores_de_incognitas[expresion[i]]}\n")
                     valores_asignados[ord(expresion[i]) - ord("A")] = True
 
