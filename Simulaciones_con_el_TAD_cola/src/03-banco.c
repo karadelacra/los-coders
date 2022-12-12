@@ -100,7 +100,7 @@ int main(void)
     inicializar_filas(filas, intervalos_llegada);
 
     // Comenzar simulación
-    while (clientes_atendidos <= 100 || !banco_vacio)
+    while (1)
     {
         // Incrementar tiempo
         EsperarMiliSeg(INTERVALO_BASE);
@@ -118,15 +118,7 @@ int main(void)
             printf("Cliente: %c%d ", cajas[i].cliente.tipo, cajas[i].cliente.n);
             printf("Tiempo restante: %d\n", cajas[i].tiempo_restante);
         }
-
-        banco_vacio = (
-            Empty(&filas[0].clientes) && Empty(&filas[1].clientes) && Empty(&filas[2].clientes) &&
-            cajas[0].cliente.n == -1 && cajas[1].cliente.n == -1 && cajas[2].cliente.n == -1
-        );
     }
-    printf("El banco cerro, despues de atender a %d clientes\n", clientes_atendidos);
-    printf("Tiempo total: %d\n", tiempo);
-
     return 0;
 }
 
