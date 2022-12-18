@@ -43,6 +43,12 @@ Se compila de la forma:
 #define MAX_CAJAS 10
 #define MAX_CLIENTES 100
 #define INTERVALO_BASE 10
+#define MAX_WIDTH 120
+#define MAX_HEIGHT 27
+#define INICIO_FILA 7
+
+int espacioenblanco;
+char Strings[3][11] = {" CLIENTES  ", " USUARIOS  ", "PREFERENTES"};
 
 // Estructuras
 
@@ -72,14 +78,19 @@ caja *inicializar_cajas(int num_cajas);
 void inicializar_filas(fila filas[3], int intervalos_llegada[3]);
 void llegada_clientes(fila filas[3], int tiempo);
 int atender_clientes(caja *cajas, int num_cajas, fila filas[3], int tiempo_atencion);
+void DibujarFila(fila *f, int x);
+void DibujarCliente(elemento *cliente, int x, int y);
+void DibujarBanco(int num);
+void SeleccionarColor(char tipo);
 
 int main(void)
 {
-    caja *cajas;
+    BorrarPantalla();
+	caja *cajas;
     fila filas[3];
     int i, clientes_atendidos = 0, tiempo = 0;
     int num_cajas, tiempo_atencion;
-    bool banco_vacio = true;
+    
     // Intervalos de llegada ordenados de mayor a menor prioridad
     // 0: Clientes preferentes
     // 1: Clientes del banco
@@ -91,7 +102,9 @@ int main(void)
         &num_cajas,
         &tiempo_atencion,
         intervalos_llegada);
-
+	
+	BorrarPantalla();
+	
     tiempo_atencion /= INTERVALO_BASE;
     printf("Tiempo de atenciÃ³n: %d\n", tiempo_atencion);
 
@@ -99,14 +112,26 @@ int main(void)
     cajas = inicializar_cajas(num_cajas);
     inicializar_filas(filas, intervalos_llegada);
 
+	espacioenblanco = (118-(num_cajas*9))/2;
+	DibujarBanco(num_cajas);
+
     // Comenzar simulaciÃ³n
-    while (clientes_atendidos <= 100 || !banco_vacio)
+    while (true)
     {
         // Incrementar tiempo
         EsperarMiliSeg(INTERVALO_BASE);
         tiempo++;
-        printf("T: %d, Clientes Atendidos: %d\n", tiempo, clientes_atendidos);
-
+        MoverCursor(0,0);
+		//printf("Tiempo: %d, Clientes Atendidos: %d\n", tiempo, clientes_atendidos);
+		lmagenta();
+		printf("Tiempo: ");
+		reset();
+		printf("%d", tiempo);
+		lmagenta();
+		printf(", Clientes Atendidos: ");
+		reset();
+		printf("%d", clientes_atendidos);
+		
         // Llegada de clientes en intervalos de tiempo
         llegada_clientes(filas, tiempo);
 
@@ -114,20 +139,193 @@ int main(void)
         clientes_atendidos += atender_clientes(cajas, num_cajas, filas, tiempo_atencion);
         for (i = 0; i < num_cajas; i++)
         {
-            printf("Caja %d: ", i + 1);
+            MoverCursor(79,18+i);
+			printf("Caja %d: ", i + 1);
+			MoverCursor(87,18+i);
             printf("Cliente: %c%d ", cajas[i].cliente.tipo, cajas[i].cliente.n);
-            printf("Tiempo restante: %d\n", cajas[i].tiempo_restante);
+            MoverCursor(102,18+i);
+            printf("T res: %d\n", cajas[i].tiempo_restante);
         }
-
-        banco_vacio = (
-            Empty(&filas[0].clientes) && Empty(&filas[1].clientes) && Empty(&filas[2].clientes) &&
-            cajas[0].cliente.n == -1 && cajas[1].cliente.n == -1 && cajas[2].cliente.n == -1
-        );
     }
-    printf("El banco cerro, despues de atender a %d clientes\n", clientes_atendidos);
-    printf("Tiempo total: %d\n", tiempo);
 
     return 0;
+}
+
+
+/* void l<color>()
+"Imprime" un código que representa un color para darle presentación al programa */
+void lmagenta(){
+	printf("\033[1;95m");}
+void lamarillo(){
+	printf("\033[1;33m");}
+void lcian(){
+	printf("\033[1;96m");}
+void lblanco(){
+	printf("\033[1;97m");}
+void reset () {
+  printf("\033[0m");
+}
+
+/* void DibujarFilas(fila *f, int x)
+Recibe:
+    fila *f: Puntero a la cola fila
+    int x: posición horizontal a donde está la fila
+Borra toda la fila y la vuelve a dibujar con los datos actualizados. */
+void DibujarFila(fila *f, int x)
+{
+	int maximo;
+	int k;
+	elemento cliente;
+	
+	if(Size(f)<MAX_HEIGHT-INICIO_FILA)
+	{
+		maximo = Size(f);
+	}
+	else
+	{
+		maximo = MAX_HEIGHT-INICIO_FILA;
+	}
+	
+	for(k=maximo+INICIO_FILA;k<MAX_HEIGHT;k++)
+	{
+		MoverCursor(x,k);
+		printf("     ");
+	}
+	
+	for(k=1;k<=f->clientes.num_elem;k++)
+	{
+		if(INICIO_FILA+(k-1)>MAX_HEIGHT)
+		{
+			MoverCursor(x,MAX_HEIGHT-1);
+			printf("...  ");
+			MoverCursor(x,MAX_HEIGHT);
+
+			SeleccionarColor(Final(f).tipo);
+			printf("%c%d",Final(f).tipo, Final(f).n);
+			reset();
+			break;
+		}
+		else
+		{
+			cliente = Element(f,k);
+			DibujarCliente(&cliente, x, INICIO_FILA+(k-1));
+		}	
+	}
+}
+
+/* void DibujarCliente(elemento *cliente, int x, int y)
+Recibe:
+    elemento *cliente: Puntero a elemento cliente
+    int x: posición horizontal
+    int y: posición vertical
+Imprime el elemento, haciendo uso de las coordenadas dadas y de otra función que las pinta
+de color */
+void DibujarCliente(elemento *cliente, int x, int y)
+{
+	MoverCursor(x,y);
+	SeleccionarColor(cliente->tipo);
+	printf("%c%d",cliente->tipo, cliente->n);
+	reset();
+}
+
+/* void SeleccionarColor(char tipo)
+Recibe:
+    char tipo: tipo de cliente
+Dependiendo del tipo de cliente, pinta de un color específico:
+amarillo para los Clientes Preferentes
+Azul para los Clientes
+Blanco para los Usuarios */
+void SeleccionarColor(char tipo)
+{
+	if(tipo=='P')
+	{
+		lamarillo();
+	}
+	else if (tipo=='C')
+	{
+		lcian();
+	}
+	else
+	{
+		lblanco();
+	}
+}
+
+/* void DibujarBanco(int num)
+Recibe:
+    int num: número de cajas
+Dibuja el banco, todas las cajas, las filas vacías y un logo. */
+void DibujarBanco(int num)
+{
+	int i;
+	
+	for(i=0; i < num; i++)
+	{
+		MoverCursor(i*9+espacioenblanco,1);
+		lmagenta();
+		if(i!=9)
+		{
+			printf(" %c%c%c%c%c%c%c%c\n",201,205,205,205,205,205,205,187);
+		}
+		else
+		{
+			printf(" %c%c%c%c%c%c%c%c%c\n",201,205,205,205,205,205,205,205,187);
+		}
+		
+		MoverCursor(i*9+espacioenblanco,2);
+		//printf(" %cCAJA %d%c",186,i+1,186);
+		printf(" %c",186);
+		reset();
+		printf("CAJA %d",i+1);
+		lmagenta();
+		printf("%c",186);
+		MoverCursor(i*9+espacioenblanco,3);
+		lmagenta();
+		if(i!=9)
+		{
+			printf(" %c%c%c%c%c%c%c%c\n",200,205,205,205,205,205,205,188);
+		}
+		else
+		{
+			printf(" %c%c%c%c%c%c%c%c%c\n",200,205,205,205,205,205,205,205,188);
+		}
+		reset();
+	}
+	for(i=INICIO_FILA; i<MAX_HEIGHT+1; i++)
+	{
+		MoverCursor(47,i);
+		if(i>INICIO_FILA+2 && i<INICIO_FILA+14)
+		{
+			/*printf("%c%c     %c%c     %c%c     %c",186, Strings[2][i-INICIO_FILA-3],
+			186,Strings[0][i-INICIO_FILA-3] ,186, Strings[1][i-INICIO_FILA-3],186);*/
+			lmagenta();
+			printf("%c",186);
+			reset();
+			printf("%c",Strings[2][i-INICIO_FILA-3]);
+			lmagenta();
+			printf("      %c",186);
+			reset();
+			printf("%c",Strings[0][i-INICIO_FILA-3]);
+			lmagenta();
+			printf("      %c",186);
+			reset();
+			printf("%c",Strings[1][i-INICIO_FILA-3]);
+			lmagenta();
+			printf("      %c",186);
+			reset();
+		}
+		else
+		{
+			lmagenta();
+			printf("%c       %c       %c       %c",186,186,186,186);
+			reset();
+		}
+	}
+	
+	MoverCursor(100,0);
+	lmagenta();
+	printf("LOS CODERS%c (2022)",184);
+	reset();
 }
 
 /* void escanear_datos(int *num_cajas, int *tiempo_atencion, int intervalos_llegada[3])
@@ -149,7 +347,7 @@ void escanear_datos(int *num_cajas, int *tiempo_atencion, int intervalos_llegada
     // Verifica que el nÃºmero de cajas no sea invÃ¡lido
     if (*num_cajas < 0 || *num_cajas > MAX_CAJAS)
     {
-        printf("El nÃºmero de cajas debe estar entre 0 y %d.\n", MAX_CAJAS + 1);
+        printf("El n%cmero de cajas debe estar entre 0 y %d.\n",163,MAX_CAJAS + 1);
         exit(1);
     }
 
@@ -158,12 +356,12 @@ void escanear_datos(int *num_cajas, int *tiempo_atencion, int intervalos_llegada
     // Verifica que el tiempo de atenciÃ³n sea vÃ¡lido
     if (*tiempo_atencion < 1)
     {
-        printf("El tiempo de atenciÃ³n debe ser mayor a 0.\n");
+        printf("El tiempo de atenci%cn debe ser mayor a 0.\n",162);
         exit(1);
     }
     if (*tiempo_atencion % 10 != 0)
     {
-        printf("El tiempo de atenciÃ³n debe ser mÃºltiplo de 10ms.\n");
+        printf("El tiempo de atenci%cn debe ser mÃºltiplo de 10ms.\n",162);
         exit(1);
     }
 
@@ -179,7 +377,7 @@ void escanear_datos(int *num_cajas, int *tiempo_atencion, int intervalos_llegada
         if (intervalos_llegada[i] < 1 && intervalos_llegada[i] % 10 == 0)
         {
             printf("El intervalo de llegada debe ser mayor a 0.\n");
-            printf("El intervalo de llegada debe ser mÃºltiplo de 10ms.\n");
+            printf("El intervalo de llegada debe ser m%cltiplo de 10ms.\n",163);
             exit(1);
         }
     }
@@ -238,7 +436,7 @@ void llegada_clientes(fila filas[3], int tiempo)
 {
     elemento cliente;
     char tipos[] = {'P', 'C', 'U'};
-    int i;
+    int i,j;
     for (i = 0; i < 3; i++)
     {
         if (tiempo % filas[i].intervalo_llegada == 0)
@@ -248,8 +446,13 @@ void llegada_clientes(fila filas[3], int tiempo)
             cliente.n = ++(filas[i].clientes_recibidos);
 
             // Agregar cliente a la cola de clientes
+            MoverCursor(0,27);
             Queue(&(filas[i].clientes), cliente);
-            printf("LlegÃ³ el cliente %c%d\n", cliente.tipo, cliente.n);
+            /*MoverCursor(73,6);
+			printf("Lleg%c el cliente ", 162);
+			MoverCursor(72+j,7);
+			printf("%c%d\n",cliente.tipo, cliente.n);*/
+			DibujarFila(&filas[i],50+(i*8));
         }
     }
 }
@@ -267,6 +470,7 @@ Atiende a los clientes que estÃ¡n en las cajas y los libera si ya terminÃ³ su ti
 int atender_clientes(caja *cajas, int num_cajas, fila filas[3], int tiempo_atencion)
 {
     int i, j, f, clientes_atendidos = 0;
+    int k;
     bool no_han_esperado_mucho, fila_clientes_vacia;
     for (i = 0; i < num_cajas; i++)
     {
@@ -281,10 +485,13 @@ int atender_clientes(caja *cajas, int num_cajas, fila filas[3], int tiempo_atenc
                 // El cliente ha sido atendido
                 clientes_atendidos++;
                 // Mostrar mensaje de atenciÃ³n
-                printf("En la caja %d se atendiÃ³ el cliente %c%d\n",
-                    i + 1,
+                MoverCursor(79,6+i);
+				printf("En caja %d se atendi%c a %c%d\n",
+                    i + 1, 162,
                     cajas[i].cliente.tipo,
                     cajas[i].cliente.n);
+                MoverCursor(i*9+espacioenblanco+1,4);
+                printf("        ");
                 cajas[i].cliente.tipo = ' ';
                 cajas[i].cliente.n = -1;
             }
@@ -311,12 +518,18 @@ int atender_clientes(caja *cajas, int num_cajas, fila filas[3], int tiempo_atenc
             // Mandar a la caja el primer cliente de la fila
             if (f != -1)
             {
-                cajas[i].cliente = Dequeue(&filas[f].clientes);
+				cajas[i].cliente = Dequeue(&filas[f].clientes);
+				
+				DibujarFila(&filas[f], 50+(f*8));
+				
                 cajas[i].tiempo_restante = tiempo_atencion;
-                printf("En la caja %d se atenderÃ¡ al cliente %c%d\n",
-                    i + 1,
+                MoverCursor(1,6+i);
+				printf("Caja %d %c Cliente %c%d\n",
+                    i + 1, 186,
                     cajas[i].cliente.tipo,
                     cajas[i].cliente.n);
+                
+                DibujarCliente(&(cajas[i].cliente),i*9+espacioenblanco+3,4);
 
                 filas[f].tiempo_esperando = 0;
                 // Incrementar el tiempo que han esperado los clientes en las otras filas
@@ -328,4 +541,6 @@ int atender_clientes(caja *cajas, int num_cajas, fila filas[3], int tiempo_atenc
     }
     return clientes_atendidos;
 }
+
+
 
