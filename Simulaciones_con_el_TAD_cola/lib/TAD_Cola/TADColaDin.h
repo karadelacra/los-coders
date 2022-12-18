@@ -29,6 +29,7 @@ typedef struct elemento
 	//Variables de la estructura "elemento" (El usuario puede modificar)
 	int tipo;
 	int n;
+	void *p; //Puntero a cualquier tipo de dato
 	//***
 	//***
 } elemento;

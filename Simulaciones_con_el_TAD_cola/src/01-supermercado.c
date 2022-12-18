@@ -19,12 +19,210 @@ abierto los clientes llegan en intervalos de tiempo constantes.
 
 Se imprimen las cajas y los clientes que están en cada una de ellas
 durante la simulación.
+
+Se compila de la forma:
+    (Linux)
+    gcc -o 01-supermercado 01-supermercado.c ../lib/TAD_Cola/TADColaEst.c ../lib/presentacionLin.c
+    (Windows)
+    gcc -o 01-supermercado 01-supermercado.c ../lib/TAD_Cola/TADColaEst.c ../lib/presentacionWin.c
+
+Se ejecuta de la forma:
+    ./01-supermercado
 */
 
-// Un hello world de placeholder
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include "../lib/TAD_Cola/TADColaEst.h"
+#include "../lib/presentacion.h"
 
-int main(void) {
-    printf("Hello, World!\n");
+#define MAX_CAJAS 10
+#define MAX_CLIENTES 100
+#define INTERVALO_BASE 10
+
+void EscanearDatos(int *num_cajas, int *tiempo_atencion, int *intervalo_llegada);
+void LlegadaCliente(cola *cajas, int num_cajas, int *clientes_totales);
+void DibujarCajas(cola *cajas, int num_cajas);
+
+int main()
+{
+    int i, num_cajas, *tiempo_atencion, intervalo_llegada,
+        tiempo = 0, clientes_atendidos = 0, clientes_totales = 0;
+    bool super_vacio = false;
+    cola *cajas;
+    char nombre_supermercado[50];
+
+    // Escanear nombre del supermercado
+    printf("Nombre del supermercado: ");
+    scanf("%s", nombre_supermercado);
+
+    // Escanear número de cajas
+    printf("Numero de cajas: ");
+    scanf("%d", &num_cajas);
+    if (num_cajas > MAX_CAJAS)
+    {
+        printf("El numero de cajas no puede ser mayor a %d\n", MAX_CAJAS);
+        exit(1);
+    } else if (num_cajas < 1)
+    {
+        printf("El numero de cajas no puede ser menor a 1\n");
+        exit(1);
+    }
+
+    // Asignar memoria para los tiempos de atención
+    tiempo_atencion = (int *)malloc(num_cajas * sizeof(int));
+    if (tiempo_atencion == NULL)
+    {
+        printf("No se pudo asignar memoria\n");
+        exit(1);
+    }
+
+    // Escanear el resto de los datos
+    EscanearDatos(&num_cajas, tiempo_atencion, &intervalo_llegada);
+
+    // Inicializar cajas
+    cajas = (cola *)malloc(num_cajas * sizeof(cola));
+    if (cajas == NULL)
+    {
+        printf("Error al asignar memoria para las cajas");
+        exit(1);
+    }
+    for (i = 0; i < num_cajas; i++)
+        Initialize(&cajas[i]);
+
+    // Comenzar simulación
+    while (clientes_atendidos < 100 || !super_vacio)
+    {
+        // Incrementar tiempo
+        EsperarMiliSeg(INTERVALO_BASE*10);
+        tiempo++;
+        printf("T: %d, Clientes Atendidos: %d\n", tiempo, clientes_atendidos);
+
+        // Atender clientes
+        for (i = 0; i < num_cajas; i++)
+            if (tiempo % tiempo_atencion[i] == 0 && !Empty(&cajas[i])) {
+                printf("Caja %d atendio al cliente %d\n", i + 1, Dequeue(&cajas[i]).n);
+                clientes_atendidos++;
+            }
+
+        // Llegada de clientes
+        if (tiempo % intervalo_llegada == 0)
+            LlegadaCliente(cajas, num_cajas, &clientes_totales);
+
+        // Imprimir cajas
+        DibujarCajas(cajas, num_cajas);
+
+        // Verificar si el supermercado está vacío
+        super_vacio = true;
+        for (i = 0; i < num_cajas; i++)
+            if (!Empty(&cajas[i]))
+                super_vacio = false;
+    }
+    printf("%s cerro, despues de atender a %d clientes\n", nombre_supermercado, clientes_atendidos);
+    printf("Tiempo total: %d\n", tiempo);
     return 0;
+}
+
+
+/* void EscanearDatos(int *num_cajas, int *tiempo_atencion, int *intervalo_llegada)
+Recibe:
+    - num_cajas: puntero a entero donde se guardará el número de cajas
+    - tiempo_atencion: puntero a arreglo de enteros donde se guardará el tiempo de atención de cada caja
+    - intervalo_llegada: puntero a entero donde se guardará el intervalo de llegada de clientes
+
+Asigna los valores escaneados a las variables recibidas
+Saldrá del programa si:
+    - El número de cajas es mayor a MAX_CAJAS
+    - El número de cajas es menor a 1
+    - El tiempo de atención de alguna caja o el intervalo de llegada de los
+    clientes no es un múltiplo de INTERVALO_BASE
+*/
+void EscanearDatos(int *num_cajas, int *tiempo_atencion, int *intervalo_llegada)
+{
+    int i;
+    // Escanear tiempo de atención de cada caja
+    for (i = 0; i < *num_cajas; i++)
+    {
+        printf("Tiempo de atencion de la caja %d: ", i + 1);
+        scanf("%d", &tiempo_atencion[i]);
+        if (tiempo_atencion[i] < 10)
+        {
+            printf("El tiempo de atencion de la caja %d no puede ser menor a %d\n", i + 1, INTERVALO_BASE);
+            exit(1);
+        } else if (tiempo_atencion[i] % INTERVALO_BASE != 0)
+        {
+            printf("El tiempo de atencion de la caja %d no es multiplo de %d\n", i + 1, INTERVALO_BASE);
+            exit(1);
+        }
+        tiempo_atencion[i] /= INTERVALO_BASE;
+    }
+    // Escanear tiempo de llegada de clientes
+    printf("Tiempo de llegada de clientes: ");
+    scanf("%d", intervalo_llegada);
+    if (*intervalo_llegada < 10)
+    {
+        printf("El tiempo de llegada de clientes no puede ser menor a %d\n", INTERVALO_BASE);
+        exit(1);
+    } else if (*intervalo_llegada % INTERVALO_BASE != 0)
+    {
+        printf("El tiempo de llegada de clientes no es multiplo de %d\n", INTERVALO_BASE);
+        exit(1);
+    }
+    *intervalo_llegada /= INTERVALO_BASE;
+}
+
+
+/* void LlegadaCliente(caja *cajas, int num_cajas, int *clientes_totales)
+Recibe:
+    cajas: Arreglo de cajas del supermercado
+    num_cajas: Número de cajas del supermercado
+    clientes_totales: Número de clientes que hayan llegado al supermercado
+
+Asigna un nuevo cliente a una caja aleatoria y lo agrega a la cola de clientes de la caja.
+
+Pero se guardan por orden de prioridad en el arreglo intervalos_llegada.*/
+void LlegadaCliente(cola *cajas, int num_cajas, int *clientes_totales)
+{
+    int i, caja_elegida;
+    elemento nuevo_cliente;
+    // Elegir caja aleatoria
+    caja_elegida = rand() % num_cajas;
+    // Asignar nuevo cliente
+    ++(*clientes_totales);
+    nuevo_cliente.n = *clientes_totales;
+
+    // Agregar cliente a la cola de la caja
+    Queue(&cajas[caja_elegida], nuevo_cliente);
+}
+
+/* void DibujarCajas(cola *cajas, int num_cajas)
+Recibe:
+    cajas: Arreglo de cajas del supermercado
+    num_cajas: Número de cajas del supermercado
+
+Imprime el estado de las cajas del supermercado
+*/
+void DibujarCajas(cola *cajas, int num_cajas)
+{
+    int i, j;
+    elemento cliente;
+    printf("Cajas:\n");
+    for (i = 0; i < num_cajas; i++)
+    {
+        printf("Caja %d: ", i + 1);
+        // PrintQueue(&cajas[i]);
+        for (int j = 1; j <= Size(&cajas[i]); j++)
+        {
+            if (j > 20)
+            {
+                printf("...");
+                cliente = Final(&cajas[i]);
+                printf("%d ", cliente.n);
+                break;
+            }
+            cliente = Element(&cajas[i], j);
+            printf("%d ", cliente.n);
+        }
+        printf("\n");
+    }
 }
