@@ -92,7 +92,7 @@ void BorrarFila(int y);
 int main() {
     int i, tiempo = 0, procesos_totales = 0;
     cola procesos, procesos_terminados;
-    proceso *p,*p2;
+    proceso *p;
     elemento e;
     bool primero = true;
 
@@ -124,8 +124,10 @@ int main() {
         e = Dequeue(&procesos);
         p = (proceso *)e.p;
         p->tiempo_restante--;
+        //Imprime el proceso actual en la tabla
         ImprimirProceso(p,MIN_HEIGHT-1);
         
+        //Imprime el proceso anterior al actual
         if(!primero&&!Empty(&procesos))
         {
         	ImprimirPendiente((proceso *)Final(&procesos).p,ANTERIOR,ACTUAL-1);
@@ -135,7 +137,9 @@ int main() {
 			ImprimirPendiente(p,ANTERIOR,ACTUAL-1);
 		}
 		primero=false;
+		//Imprime el proceso actual
         ImprimirPendiente(p,ACTUAL+1,ULTIMO-1);
+        //Imprime el proceso siguiente
         if(!Empty(&procesos))
         {
         	ImprimirPendiente((proceso *)Front(&procesos).p,ULTIMO+1,POSICION_MAX-2);
@@ -145,29 +149,28 @@ int main() {
    			ImprimirPendiente(p,ULTIMO+1,POSICION_MAX-2);
 		}
         
+        //Imprime el resto de procesos en la tabla
         for(i=0; i< (MAX_HEIGHT-MIN_HEIGHT+1); i++)
         {
         	if(i<Size(&procesos)&&i<(MAX_HEIGHT-MIN_HEIGHT))
         	{
-				p2 = (proceso *)Element(&procesos,i+1).p;
-				ImprimirProceso(p2,MIN_HEIGHT+i);
+				ImprimirProceso((proceso *)Element(&procesos,i+1).p,MIN_HEIGHT+i);
 			}
 		}
+		
         if (p->tiempo_restante == 0) {
-            MoverCursor(25,0);
-			printf("Proceso %s %s terminado\n", p->ID, p->nombre);
             time(&p->fin);
             e.p = p;
+            //añade el proceso a la cola de procesos terminados
             Queue(&procesos_terminados, e);
-            //p = (proceso *)Final(&procesos_terminados).p;
-            MoverCursor(POSICION_NOMBRE,4+Size(&procesos_terminados));
+            //Imprime el proceso terminado
             ImprimirTerminado(p,4+Size(&procesos_terminados));
+            //Borra la última fila
             if(Size(&procesos)<(MAX_HEIGHT-MIN_HEIGHT)+1)
             {
 				BorrarFila(MIN_HEIGHT+Size(&procesos)-1);
 			}
         } else {
-			//printf("Proceso %s (%s): %d\n", p->ID, p->nombre, p->tiempo_restante);
             e.p = p;
             Queue(&procesos, e);
         }
@@ -190,6 +193,12 @@ int main() {
     return 0;
 }
 
+/* void ImprimirProceso(proceso *p, int y)
+Recibe:
+	*p: apuntador del proceso
+    y: posición vertical
+Imprime el nombre, actividad, ID y tiempo restante del proceso.
+*/
 void ImprimirProceso(proceso *p, int y)
 {
 	int i;
@@ -242,6 +251,12 @@ void ImprimirProceso(proceso *p, int y)
     printf("%d",p->tiempo_restante);
 }
 
+/* void ImprimirTerminado(proceso *p, int y)
+Recibe:
+	*p: apuntador del proceso
+    y: posición vertical
+Imprime el ID, nombre y tiempo total del proceso terminado.
+*/
 void ImprimirTerminado(proceso *p, int y)
 {
 	int i;
@@ -276,6 +291,13 @@ void ImprimirTerminado(proceso *p, int y)
 	printf("%d",(int)(p->fin - p->inicio));
 }
 
+/* void ImprimirPendiente(proceso *p, int margenizquierda, int margenderecha)
+Recibe:
+    *p: apuntador del proceso
+    margenizquierda: posicion de donde se empieza a escribir
+    margenderecha: posicion de hasta donde se puede escribir
+Imprime el ID, Nombre y tiempo pendiente de los procesos actuales, anteriores y siguientes
+*/
 void ImprimirPendiente(proceso *p, int margenizquierda, int margenderecha)
 {
 	int i;
@@ -368,6 +390,10 @@ void ImprimirFinal(proceso *p, int y)
     printf("%d seg",(int)(p->fin - p->inicio));
 }
 
+/* void DibujarAdministrador()
+Dibuja el esqueleto de las tablas que muestra los procesos en proceso, siguientes y anteriores; y
+la tabla que muestra los procesos terminados.
+*/
 void DibujarAdministrador()
 {
 	int i;
@@ -546,6 +572,9 @@ void DibujarAdministrador()
 	printf("%c",197);
 }
 
+/* void DibujarTerminado()
+Dibuja el esqueleto de la tabla que muestra todos los procesos terminados.
+*/
 void DibujarTerminado()
 {
 	int i;
@@ -596,6 +625,11 @@ void DibujarTerminado()
 	printf("%c",197);
 }
 
+/* void BorrarFila(int y)
+Recibe:
+    y: posición vertical
+Borra la fila en la posición que se recibió, sin borrar los bordes de columnas.
+*/
 void BorrarFila(int y)
 {
 	int i;
