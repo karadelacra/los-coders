@@ -33,6 +33,7 @@ Se ejecuta de la forma:
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include "../lib/TAD_Cola/TADColaEst.h"
 #include "../lib/presentacion.h"
 
@@ -42,7 +43,8 @@ Se ejecuta de la forma:
 
 void EscanearDatos(int *num_cajas, int *tiempo_atencion, int *intervalo_llegada);
 void LlegadaCliente(cola *cajas, int num_cajas, int *clientes_totales);
-void DibujarCajas(cola *cajas, int num_cajas);
+void DibujarSuper(cola *cajas, int num_cajas, char *nombre_supermercado);
+void DibujarClientes(cola *caja, int num_caja);
 
 int main()
 {
@@ -90,18 +92,24 @@ int main()
     for (i = 0; i < num_cajas; i++)
         Initialize(&cajas[i]);
 
+    // Dibujar supermercado
+    DibujarSuper(cajas, num_cajas, nombre_supermercado);
+
     // Comenzar simulación
     while (clientes_atendidos < 100 || !super_vacio)
     {
         // Incrementar tiempo
         EsperarMiliSeg(INTERVALO_BASE*10);
         tiempo++;
-        printf("T: %d, Clientes Atendidos: %d\n", tiempo, clientes_atendidos);
+        MoverCursor(strlen(nombre_supermercado) + 5, 2);
+        printf(" Clientes Atendidos: %d\n", clientes_atendidos);
 
         // Atender clientes
         for (i = 0; i < num_cajas; i++)
             if (tiempo % tiempo_atencion[i] == 0 && !Empty(&cajas[i])) {
-                printf("Caja %d atendio al cliente %d\n", i + 1, Dequeue(&cajas[i]).n);
+                //printf("Caja %d atendio al cliente %d\n", i + 1, Dequeue(&cajas[i]).n);
+                Dequeue(&cajas[i]);
+                DibujarClientes(&cajas[i], i);
                 clientes_atendidos++;
             }
 
@@ -109,8 +117,6 @@ int main()
         if (tiempo % intervalo_llegada == 0)
             LlegadaCliente(cajas, num_cajas, &clientes_totales);
 
-        // Imprimir cajas
-        DibujarCajas(cajas, num_cajas);
 
         // Verificar si el supermercado está vacío
         super_vacio = true;
@@ -118,6 +124,7 @@ int main()
             if (!Empty(&cajas[i]))
                 super_vacio = false;
     }
+    MoverCursor(1, 17);
     printf("%s cerro, despues de atender a %d clientes\n", nombre_supermercado, clientes_atendidos);
     printf("Tiempo total: %d\n", tiempo);
     return 0;
@@ -193,36 +200,105 @@ void LlegadaCliente(cola *cajas, int num_cajas, int *clientes_totales)
 
     // Agregar cliente a la cola de la caja
     Queue(&cajas[caja_elegida], nuevo_cliente);
+    DibujarClientes(&cajas[caja_elegida], caja_elegida);
 }
 
-/* void DibujarCajas(cola *cajas, int num_cajas)
+
+/* void ImprimirConMarco(char *cadena)
+Recibe:
+    cadena: Cadena de caracteres a imprimir
+
+Imprime la cadena de caracteres recibida con un marco alrededor
+*/
+void ImprimirConMarco(int pos_x, int pos_y, char *cadena)
+{
+    int i, ancho = strlen(cadena) + 4 - 1;
+    MoverCursor(pos_x, pos_y);
+    printf("%c", 201);
+    for (i = 0; i < ancho; i++)
+        printf("%c", 205);
+    printf("%c", 187);
+    MoverCursor(pos_x, pos_y + 1);
+    printf("%c", 186);
+    printf(" %s ", cadena);
+    printf("%c", 186);
+    MoverCursor(pos_x, pos_y + 2);
+    printf("%c", 200);
+    for (i = 0; i < ancho; i++)
+        printf("%c", 205);
+    printf("%c", 188);
+}
+
+/* void DibujarSuper(cola *cajas, int num_cajas , char *nombre_supermercado)
 Recibe:
     cajas: Arreglo de cajas del supermercado
     num_cajas: Número de cajas del supermercado
+    nombre_supermercado: Nombre del supermercado
 
-Imprime el estado de las cajas del supermercado
+Imprime la parte estática del supermercado, es decir, los barandales y los recuadros de las cajas.
 */
-void DibujarCajas(cola *cajas, int num_cajas)
+void DibujarSuper(cola *cajas, int num_cajas, char *nombre_supermercado)
 {
     int i, j;
-    elemento cliente;
-    printf("Cajas:\n");
+    int ancho_caja = 10, margen = 2, ancho_fila = 5;
+    int pos_x;
+    char buffer[20];
+
+    BorrarPantalla();
+    // Imprimir el nombre del supermercado con un borde bonito
+    ImprimirConMarco(1,1, nombre_supermercado);
+
     for (i = 0; i < num_cajas; i++)
     {
-        printf("Caja %d: ", i + 1);
-        // PrintQueue(&cajas[i]);
-        for (int j = 1; j <= Size(&cajas[i]); j++)
+        pos_x = i*(ancho_caja + ancho_fila) + margen + 1;
+        // Primero los barandales
+        for (j = 0; j < 15; j++)
         {
-            if (j > 20)
-            {
-                printf("...");
-                cliente = Final(&cajas[i]);
-                printf("%d ", cliente.n);
-                break;
-            }
-            cliente = Element(&cajas[i], j);
-            printf("%d ", cliente.n);
+            MoverCursor(pos_x + ancho_caja - 1, margen + 6 + j);
+            printf("|     |");
         }
-        printf("\n");
+        // Ahora los recuadros
+        sprintf(buffer, "Caja %d", i + 1);
+        ImprimirConMarco(pos_x, margen + 3, buffer);
+    }
+}
+
+/* void DibujarClientes(cola *caja, int n_caja)
+Recibe:
+    caja: Puntero a una cola de clientes
+    n_caja: Número de la caja (a partir de 0)
+
+Re-imprime la cola de clientes de la caja recibida.
+*/
+void DibujarClientes(cola *caja, int n_caja)
+{
+    int i, pos_x, pos_y;
+    elemento cliente;
+
+    // Asumiendo que acaba de haber un cambio en la cola
+    // Borrar el cliente que estaba en la última posición
+    pos_x = (n_caja + 1)*(10 + 5) - 1;
+    pos_y = 5 + Size(caja);
+    MoverCursor(pos_x, pos_y+1);
+    printf("    ");
+    MoverCursor(pos_x, pos_y+2);
+    printf("    ");
+
+    for (i = 1; i <= Size(caja); i++)
+    {
+        pos_y = 5 + i;
+        MoverCursor(pos_x, pos_y);
+        if (i >= 20)
+        {
+            MoverCursor(pos_x, pos_y-1);
+            printf("... ");
+            MoverCursor(pos_x, pos_y);
+            cliente = Final(caja);
+            // Recortar los números grandes
+            printf("%d", cliente.n);
+            break;
+        }
+        cliente = Element(caja, i);
+        printf("%d", cliente.n);
     }
 }
