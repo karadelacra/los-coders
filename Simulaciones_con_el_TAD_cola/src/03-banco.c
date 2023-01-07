@@ -38,6 +38,7 @@ Se compila de la forma:
 #include <stdlib.h>
 #include <stdbool.h>
 #include "../lib/TAD_Cola/TADColaEst.h"
+//#include "../lib/TAD_Cola/TADColaDin.h"
 #include "../lib/presentacion.h"
 
 #define MAX_CAJAS 10
@@ -108,7 +109,7 @@ int main(void)
     BorrarPantalla();
 
     tiempo_atencion /= INTERVALO_BASE;
-    printf("Tiempo de atención: %d\n", tiempo_atencion);
+    printf("Tiempo de atenci%cn: %d\n", tiempo_atencion,162);
 
     // Inicializar las cajas y las filas
     cajas = inicializar_cajas(num_cajas);
@@ -116,7 +117,7 @@ int main(void)
 
     espacioenblanco = (118 - (num_cajas * 9)) / 2;
     DibujarBanco(num_cajas);
-
+	
     // Comenzar simulación
     while (true)
     {
@@ -154,7 +155,7 @@ int main(void)
 }
 
 /* void l<color>()
-"Imprime" un c�digo que representa un color para darle presentaci�n al programa */
+"Imprime" un c digo que representa un color para darle presentaci n al programa */
 void lmagenta()
 {
     printf("\033[1;95m");
@@ -179,7 +180,7 @@ void reset()
 /* void DibujarFilas(fila *f, int x)
 Recibe:
     fila *f: Puntero a la cola fila
-    int x: posici�n horizontal a donde est� la fila
+    int x: posici n horizontal a donde est  la fila
 Borra toda la fila y la vuelve a dibujar con los datos actualizados. */
 void DibujarFila(fila *f, int x)
 {
@@ -226,9 +227,9 @@ void DibujarFila(fila *f, int x)
 /* void DibujarCliente(elemento *cliente, int x, int y)
 Recibe:
     elemento *cliente: Puntero a elemento cliente
-    int x: posici�n horizontal
-    int y: posici�n vertical
-Imprime el elemento, haciendo uso de las coordenadas dadas y de otra funci�n que las pinta
+    int x: posici n horizontal
+    int y: posici n vertical
+Imprime el elemento, haciendo uso de las coordenadas dadas y de otra funci n que las pinta
 de color */
 void DibujarCliente(elemento *cliente, int x, int y)
 {
@@ -241,7 +242,7 @@ void DibujarCliente(elemento *cliente, int x, int y)
 /* void SeleccionarColor(char tipo)
 Recibe:
     char tipo: tipo de cliente
-Dependiendo del tipo de cliente, pinta de un color espec�fico:
+Dependiendo del tipo de cliente, pinta de un color espec fico:
 amarillo para los Clientes Preferentes
 Azul para los Clientes
 Blanco para los Usuarios */
@@ -263,8 +264,8 @@ void SeleccionarColor(char tipo)
 
 /* void DibujarBanco(int num)
 Recibe:
-    int num: n�mero de cajas
-Dibuja el banco, todas las cajas, las filas vac�as y un logo. */
+    int num: n mero de cajas
+Dibuja el banco, todas las cajas, las filas vac as y un logo. */
 void DibujarBanco(int num)
 {
     int i;
@@ -352,7 +353,7 @@ Pero se guardan por orden de prioridad en el arreglo intervalos_llegada.*/
 void escanear_datos(int *num_cajas, int *tiempo_atencion, int intervalos_llegada[3])
 {
     int i;
-    printf("Número de cajas de atención: ");
+    printf("N%cmero de cajas de atenci%cn: ",163,162);
     scanf("%d", num_cajas);
     // Verifica que el número de cajas no sea inválido
     if (*num_cajas < 0 || *num_cajas > MAX_CAJAS)
@@ -361,7 +362,7 @@ void escanear_datos(int *num_cajas, int *tiempo_atencion, int intervalos_llegada
         exit(1);
     }
 
-    printf("Tiempo de atención en milisegundos: ");
+    printf("Tiempo de atenci%cn en milisegundos: ",162);
     scanf("%d", tiempo_atencion);
     // Verifica que el tiempo de atención sea válido
     if (*tiempo_atencion < 1)
@@ -371,7 +372,7 @@ void escanear_datos(int *num_cajas, int *tiempo_atencion, int intervalos_llegada
     }
     if (*tiempo_atencion % 10 != 0)
     {
-        printf("El tiempo de atenci%cn debe ser múltiplo de 10ms.\n", 162);
+        printf("El tiempo de atenci%cn debe ser m%cltiplo de 10ms.\n", 162,163);
         exit(1);
     }
 

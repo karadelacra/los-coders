@@ -37,7 +37,7 @@ Se ejecuta de la forma:
 #include "../lib/presentacion.h"
 
 #define INTERVALO_BASE 1000
-#define PROCESOS_INICIALES 5
+#define PROCESOS_INICIALES 3
 
 #define POSICION_ACTIVIDAD 23
 #define POSICION_CLAVE 60
@@ -88,6 +88,8 @@ void ImprimirFinal(proceso *p, int y);
 void DibujarAdministrador();
 void DibujarTerminado();
 void BorrarFila(int y);
+void lmagenta();
+void reset();
 
 int main() {
     int i, tiempo = 0, procesos_totales = 0;
@@ -95,7 +97,7 @@ int main() {
     proceso *p;
     elemento e;
     bool primero = true;
-
+	BorrarPantalla();
     // Inicializar semilla de nÃºmeros aleatorios
     srand((unsigned) 1);
 
@@ -158,14 +160,18 @@ int main() {
 			}
 		}
 		
+		
+		//IMPORTANTE Pregunta si se acaba el tiempo.
+		//Si se acabó, añade a la cola de procesos terminados.
+		//Si no, se vuelve a añadir a la cola de procesos.
         if (p->tiempo_restante == 0) {
             time(&p->fin);
             e.p = p;
-            //añade el proceso a la cola de procesos terminados
+            //a ade el proceso a la cola de procesos terminados
             Queue(&procesos_terminados, e);
             //Imprime el proceso terminado
             ImprimirTerminado(p,4+Size(&procesos_terminados));
-            //Borra la última fila
+            //Borra la  ltima fila
             if(Size(&procesos)<(MAX_HEIGHT-MIN_HEIGHT)+1)
             {
 				BorrarFila(MIN_HEIGHT+Size(&procesos)-1);
@@ -193,10 +199,33 @@ int main() {
     return 0;
 }
 
+/* void l<color>()
+"Imprime" un c digo que representa un color para darle presentaci n al programa */
+void lmagenta()
+{
+    printf("\033[1;95m");
+}
+void lamarillo()
+{
+    printf("\033[1;33m");
+}
+void lcian()
+{
+    printf("\033[1;96m");
+}
+void lblanco()
+{
+    printf("\033[1;97m");
+}
+void reset()
+{
+    printf("\033[0m");
+}
+
 /* void ImprimirProceso(proceso *p, int y)
 Recibe:
 	*p: apuntador del proceso
-    y: posición vertical
+    y: posici n vertical
 Imprime el nombre, actividad, ID y tiempo restante del proceso.
 */
 void ImprimirProceso(proceso *p, int y)
@@ -254,7 +283,7 @@ void ImprimirProceso(proceso *p, int y)
 /* void ImprimirTerminado(proceso *p, int y)
 Recibe:
 	*p: apuntador del proceso
-    y: posición vertical
+    y: posici n vertical
 Imprime el ID, nombre y tiempo total del proceso terminado.
 */
 void ImprimirTerminado(proceso *p, int y)
@@ -398,9 +427,12 @@ void DibujarAdministrador()
 {
 	int i;
 	
-	//Dibujar títulos de la tabla
+	//Dibujar t tulos de la tabla
 	MoverCursor(2,1);
-	printf("PROCESOS PENDIENTES");
+	printf("PROCESOS PENDIENTES   ");
+	lmagenta();
+    printf("LOS CODERS%c (2022)", 184);
+    reset();
 	MoverCursor(0,3);
 	printf("Nombre");
 	MoverCursor(POSICION_ACTIVIDAD,3);
@@ -509,7 +541,7 @@ void DibujarAdministrador()
 	MoverCursor(POSICION_MAX-1,CONSOLE_HEIGHT-7);
 	printf("%c",185);
 	
-	//Escribiendo los títulos de la tabla
+	//Escribiendo los t tulos de la tabla
 	MoverCursor(ANTERIOR+7,CONSOLE_HEIGHT-9);
 	printf("PROCESO");
 	MoverCursor(ANTERIOR+7,CONSOLE_HEIGHT-8);
@@ -525,9 +557,12 @@ void DibujarAdministrador()
 	
 	//-----------------------------------------------------------------//
 	//PARTE DERECHA: PROCESOS TERMINADOS.
-	//Dibujar títulos de la tabla
+	//Dibujar t tulos de la tabla
 	MoverCursor(POSICION_NOMBRE+2,1);
 	printf("PROCESOS TERMINADOS");
+	lmagenta();
+    printf("  LOS CODERS%c", 184);
+    reset();
 	MoverCursor(POSICION_NOMBRE,3);
 	printf("Nombre");
 	MoverCursor(POSICION_CLAVE2,3);
@@ -579,7 +614,7 @@ void DibujarTerminado()
 {
 	int i;
 	
-	//Dibujar títulos de la tabla
+	//Dibujar t tulos de la tabla
 	MoverCursor(2,1);
 	printf(" PROCESOS TERMINADOS");
 	MoverCursor(0,3);
@@ -627,8 +662,8 @@ void DibujarTerminado()
 
 /* void BorrarFila(int y)
 Recibe:
-    y: posición vertical
-Borra la fila en la posición que se recibió, sin borrar los bordes de columnas.
+    y: posici n vertical
+Borra la fila en la posici n que se recibi , sin borrar los bordes de columnas.
 */
 void BorrarFila(int y)
 {

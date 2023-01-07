@@ -45,6 +45,8 @@ void EscanearDatos(int *num_cajas, int *tiempo_atencion, int *intervalo_llegada)
 void LlegadaCliente(cola *cajas, int num_cajas, int *clientes_totales);
 void DibujarSuper(cola *cajas, int num_cajas, char *nombre_supermercado);
 void DibujarClientes(cola *caja, int num_caja);
+void lmagenta();
+void reset();
 
 int main()
 {
@@ -53,7 +55,8 @@ int main()
     bool super_vacio = false;
     cola *cajas;
     char nombre_supermercado[50];
-
+	
+	BorrarPantalla();
     // Escanear nombre del supermercado
     printf("Nombre del supermercado: ");
     scanf("%s", nombre_supermercado);
@@ -95,12 +98,12 @@ int main()
 
     // Dibujar supermercado
     DibujarSuper(cajas, num_cajas, nombre_supermercado);
-
+	
     // Comenzar simulación
     while (clientes_atendidos < 100 || !super_vacio)
     {
         // Incrementar tiempo
-        EsperarMiliSeg(INTERVALO_BASE * 10);
+        EsperarMiliSeg(INTERVALO_BASE);
         tiempo++;
         MoverCursor(strlen(nombre_supermercado) + 5, 2);
         printf(" Clientes Atendidos: %d\n", clientes_atendidos);
@@ -129,6 +132,18 @@ int main()
     printf("%s cerro, despues de atender a %d clientes\n", nombre_supermercado, clientes_atendidos);
     printf("Tiempo total: %d\n", tiempo);
     return 0;
+}
+
+/* void l<color>()
+"Imprime" un c digo que representa un color para darle presentaci n al programa */
+void lmagenta()
+{
+    printf("\033[1;95m");
+}
+
+void reset()
+{
+    printf("\033[0m");
 }
 
 /* void EscanearDatos(int *num_cajas, int *tiempo_atencion, int *intervalo_llegada)
@@ -215,7 +230,7 @@ void ImprimirConMarco(int pos_x, int pos_y, char *cadena)
     int i, ancho = strlen(cadena) + 4 - 1;
     MoverCursor(pos_x, pos_y);
     printf("%c", 201);
-    for (i = 0; i < ancho; i++)
+    for (i = 0; i < ancho-1; i++)
         printf("%c", 205);
     printf("%c", 187);
     MoverCursor(pos_x, pos_y + 1);
@@ -224,7 +239,7 @@ void ImprimirConMarco(int pos_x, int pos_y, char *cadena)
     printf("%c", 186);
     MoverCursor(pos_x, pos_y + 2);
     printf("%c", 200);
-    for (i = 0; i < ancho; i++)
+    for (i = 0; i < ancho-1; i++)
         printf("%c", 205);
     printf("%c", 188);
 }
@@ -245,6 +260,10 @@ void DibujarSuper(cola *cajas, int num_cajas, char *nombre_supermercado)
     char buffer[20];
 
     BorrarPantalla();
+    MoverCursor(100,0);
+	lmagenta();
+    printf("LOS CODERS%c (2022)", 184);
+    reset();
     // Imprimir el nombre del supermercado con un borde bonito
     ImprimirConMarco(1, 1, nombre_supermercado);
 
@@ -279,6 +298,10 @@ void DibujarClientes(cola *caja, int n_caja)
     // Borrar el cliente que estaba en la última posición
     pos_x = (n_caja + 1) * (10 + 5) - 1;
     pos_y = 5 + Size(caja);
+    if(pos_y >25)
+    {
+    	pos_y = 25;
+	}
     MoverCursor(pos_x, pos_y + 1);
     printf("    ");
     MoverCursor(pos_x, pos_y + 2);
