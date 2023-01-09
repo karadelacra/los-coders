@@ -1,0 +1,32 @@
+Noticia: informacion sobre algo que se considera interesante divulgar
+Saludo: Hola
+Bote: Barco
+Licantropia: En la creencia popular, transformacion de una persona en lobo.
+OwO: UwU
+Abecedario: Conjunto de letras del alfabeto, en un orden determinado, que se utilizan para escribir y leer
+Adiós: Palabra que se utiliza para despedirse de alguien
+Arcoiris: Fenómeno atmosférico que produce una banda de colores en el cielo cuando los rayos del sol atraviesan las gotas de lluvia
+Cangrejo: Animal marino de cuerpo aplanado y patas articuladas que se utiliza a menudo como alimento
+Dedo: Cada una de las partes que forman el pie y que se usan para apoyarse y andar
+Elefante: Mamífero terrestre de gran tamaño, con grandes colmillos y orejas y una trompa larga y flexible
+Foto: Imagen producida mediante la acción de la luz sobre una película sensible o sobre un sensor digital
+Gato: Mamífero doméstico con una piel suave y pelo corto o largo, de ojos grandes y oídos puntiagudos
+Hora: Unidad de tiempo que equivale a sesenta minutos
+Insecto: Animal invertebrado con cuerpo segmentado y patas articuladas, que se caracteriza por tener un par de antenas en la cabeza y una capa dura que protege su cuerpo
+Jardín: Espacio verde al aire libre, generalmente en el exterior de una casa, con plantas, flores y árboles
+Kilo: Unidad de medida de masa que equivale a mil gramos
+León: Mamífero carnívoro grande y poderoso, con crines en el cuello y patas con garras afiladas, que es el rey de los animales en la sabana africana.
+Mariposa: Insecto volador de cuerpo aplastado y alas brillantes y coloridas, que se alimenta de néctar de las flores.
+Naranja: Fruta de piel fina y suave, de color naranja, que se caracteriza por tener una pulpa jugosa y dulce
+Océano: Gran masa de agua salada que cubre más de la mitad de la superficie de la Tierra
+Palma: Árbol tropical de hojas grandes y aterciopeladas y frutos comestibles, como el coco y la palma aceitera
+Queso: Producto lácteo obtenido por la maduración de la leche, que puede ser blando o duro y de diferentes sabores y texturas
+Roble: Árbol de hojas caducas y frutos secos llamados bellotas, que se caracteriza por tener una madera dura y resistente
+Sello: Pieza de goma o metal con un diseño grabado que se utiliza para imprimir una marca en una superficie o para sellar un documento
+Tigre: Mamífero carnívoro de gran tamaño, de pelo amarillo rayado de negro, que vive en el sudeste asiático y en el subcontinente indio
+Uva: Fruta de piel fina y suave, de color morado, verde o amarillo, que se come fresca o se utiliza para hacer vino y otros productos
+Vela: Objeto de cera o aceite que se enciende para proporcionar luz o para uso ritual o decorativo
+Wifi: Tecnología que permite la conexión a Internet sin cables utilizando ondas de radio
+Xilófono: Instrumento musical de percusión que consta de un conjunto de láminas de madera o metal dispuestas en fila, que se tocan con unos palos para producir sonidos diferentes
+Yema: Parte central y más tierna de un huevo, que es rica en nutrientes y se utiliza a menudo como alimento para los bebés
+Zorro: Mamífero carnívoro de tamaño mediano, de pelo gris o marrón y orejas puntiagudas, que se caracteriza por ser astuto e inteligente.
