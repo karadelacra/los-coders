@@ -1,0 +1,13 @@
+N: ene
+E: e
+S: ese
+D: de
+K: ca
+R: erre
+W: doble u
+B: be
+H: ache
+M: eme
+Q: cu
+V: ube
+T: te

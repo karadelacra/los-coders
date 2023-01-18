@@ -1,0 +1,5 @@
+Noticia:informacion sobre algo que se considera interesante divulgar
+Saludo:Hola
+Bote:Barco
+Licantropia:En la creencia popular, transformacion de una persona en lobo.
+OwO:UwU
