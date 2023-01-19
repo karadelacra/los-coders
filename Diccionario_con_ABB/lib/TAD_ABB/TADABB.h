@@ -31,7 +31,6 @@ typedef struct nodoBin
     struct nodoBin *izq;
     struct nodoBin *der;
     struct nodoBin *padre;
-    //int indice;
     //int clave;
     //int peso;
     void *apellido;
@@ -44,42 +43,43 @@ typedef nodoBin *posicion;
 typedef struct abb
 {
     int nivel, tam;
+    int ultbusq;
     posicion raiz;
     posicion finabb;
     void *apellido;
 } abb;
 
 
-//OPERACIONES DE CONSTRUCCIÓN
+//OPERACIONES DE CONSTRUCCIï¿½N
 void Initialize (abb *a);									// Efecto: Recibe un ABB a y lo inicializa para su trabajo normal.
 void Destroy (abb *a);										// Efecto: Recibe un ABB a y lo libera completamente.
-//OPERACIONES DE POSICIONAMIENTO Y BÚSQUEDA
-posicion Root(abb *a);										// Efecto: Recibe un ABB y devuelve la posición de la raíz.
-posicion Parent(abb *a, posicion p);						// Efecto: Recibe un ABB a y una posición p, devuelve la posición de el padre.
-posicion RightSon(abb *a, posicion p);						// Efecto: Recibe un ABB a y una posición p, devuelve la posición del hijo derecho.
-posicion LeftSon(abb *a, posicion p);						// Efecto: Recibe un ABB a y una posición p, devuelve la posición del hijo izquierdo.
-posicion Search(abb *a, elemento e);						// Efecto: Recibe un ABB a y un elemento e, devuelve la posición del elemento en el árbol.
-posicion BuscarPosPalabra(posicion nodo, char palabra[101]);// Efecto: Recibe una posicion nodo y una palabra[101] y busca recursivamente si la palabra se encuentra en el árbol
+//OPERACIONES DE POSICIONAMIENTO Y Bï¿½SQUEDA
+posicion Root(abb *a);										// Efecto: Recibe un ABB y devuelve la posiciï¿½n de la raï¿½z.
+posicion Parent(abb *a, posicion p);						// Efecto: Recibe un ABB a y una posiciï¿½n p, devuelve la posiciï¿½n de el padre.
+posicion RightSon(abb *a, posicion p);						// Efecto: Recibe un ABB a y una posiciï¿½n p, devuelve la posiciï¿½n del hijo derecho.
+posicion LeftSon(abb *a, posicion p);						// Efecto: Recibe un ABB a y una posiciï¿½n p, devuelve la posiciï¿½n del hijo izquierdo.
+posicion Search(abb *a, elemento e);						// Efecto: Recibe un ABB a y un elemento e, devuelve la posiciï¿½n del elemento en el ï¿½rbol.
+posicion BuscarPosPalabra(posicion nodo, char palabra[101]);// Efecto: Recibe una posicion nodo y una palabra[101] y busca recursivamente si la palabra se encuentra en el ï¿½rbol
 //OPERACIONES DE CONSULTA
-bool Empty (abb *a);										// Efecto: Recibe un ABB a y devuelve si la lista está vacía.
-bool NullNode(abb *a, posicion p);							// Efecto: Recibe un ABB a y una posición p, devuelve verdadero si la posición p del ABB es nula o incorrecta.
-bool BuscarPosicion(posicion nodo, posicion p); 			// Efecto: Recibe una posicion nodo y una posicion p y busca recursivamente si la posicion p se encuentra en el árbol
+bool Empty (abb *a);										// Efecto: Recibe un ABB a y devuelve si la lista estï¿½ vacï¿½a.
+bool NullNode(abb *a, posicion p);							// Efecto: Recibe un ABB a y una posiciï¿½n p, devuelve verdadero si la posiciï¿½n p del ABB es nula o incorrecta.
+bool BuscarPosicion(posicion nodo, posicion p); 			// Efecto: Recibe una posicion nodo y una posicion p y busca recursivamente si la posicion p se encuentra en el ï¿½rbol
 int Size (abb *a);											// Efecto: Recibe un ABB a y regresa el tamaÃ±o de la lista.
-elemento Element(abb *a, posicion p);						// Efecto: Recibe un ABB y una posición p, regresa el elemento en dicha posición.
-void RecorridoPreOrden(nodoBin *nodo);						// Efecto: Recibe una posición e imprime el PreOrden de los elementos del árbol a partir de la posición dada.
-void RecorridoInOrden(nodoBin *nodo);						// Efecto: Recibe una posición e imprime el InOrden de los elementos del árbol a partir de la posición dada.
-void RecorridoPosOrden(nodoBin *nodo);						// Efecto: Recibe una posición e imprime el PostOrden de los elementos del árbol a partir de la posición dada.
+elemento Element(abb *a, posicion p);						// Efecto: Recibe un ABB y una posiciï¿½n p, regresa el elemento en dicha posiciï¿½n.
+void RecorridoPreOrden(nodoBin *nodo);						// Efecto: Recibe una posiciï¿½n e imprime el PreOrden de los elementos del ï¿½rbol a partir de la posiciï¿½n dada.
+void RecorridoInOrden(nodoBin *nodo);						// Efecto: Recibe una posiciï¿½n e imprime el InOrden de los elementos del ï¿½rbol a partir de la posiciï¿½n dada.
+void RecorridoPosOrden(nodoBin *nodo);						// Efecto: Recibe una posiciï¿½n e imprime el PostOrden de los elementos del ï¿½rbol a partir de la posiciï¿½n dada.
 int altura(nodoBin *nodo);
-//OPERACIONES DE MODIFICACIÓN
-void Add(abb *a, elemento e);								// Efecto: Recibe un ABB a y un elemento e, el elemento e se agregará al árbol dependiendo de su tamaño
-void ReplaceDefinition(abb *a, posicion p, char def[251]);	// Efecto: Recibe un ABB a, una posición p y una definición, reemplaza la definición del elemento en la posición dada.
+//OPERACIONES DE MODIFICACIï¿½N
+void Add(abb *a, elemento e);								// Efecto: Recibe un ABB a y un elemento e, el elemento e se agregarï¿½ al ï¿½rbol dependiendo de su tamaï¿½o
+void ReplaceDefinition(abb *a, posicion p, char def[251]);	// Efecto: Recibe un ABB a, una posiciï¿½n p y una definiciï¿½n, reemplaza la definiciï¿½n del elemento en la posiciï¿½n dada.
 void Remove(abb *a, posicion p);
-//OPERACIONES DE CONSULTA (DEPURACIÓN)
-void VerLigas(abb *a);										// Efecto: Imprime cómo está enlazado el árbol binario a detalle.
-void PreOrdenDetallado(nodoBin *nodo);						// Efecto: Recibe una posición e imprime el PreOrden de los elementos del árbol a partir de la posición dada.
-void InOrdenDetallado(nodoBin *nodo);						// Efecto: Recibe una posición e imprime el InOrden de los elementos del árbol a partir de la posición dada.
-void PosOrdenDetallado(nodoBin *nodo);						// Efecto: Recibe una posición e imprime el PostOrden de los elementos del árbol a partir de la posición dada.
-void Detalles(nodoBin *nodo);								// Efecto: Imprime los detalles de un elemento del árbol.
+//OPERACIONES DE CONSULTA (DEPURACIï¿½N)
+void VerLigas(abb *a);										// Efecto: Imprime cï¿½mo estï¿½ enlazado el ï¿½rbol binario a detalle.
+void PreOrdenDetallado(nodoBin *nodo);						// Efecto: Recibe una posiciï¿½n e imprime el PreOrden de los elementos del ï¿½rbol a partir de la posiciï¿½n dada.
+void InOrdenDetallado(nodoBin *nodo);						// Efecto: Recibe una posiciï¿½n e imprime el InOrden de los elementos del ï¿½rbol a partir de la posiciï¿½n dada.
+void PosOrdenDetallado(nodoBin *nodo);						// Efecto: Recibe una posiciï¿½n e imprime el PostOrden de los elementos del ï¿½rbol a partir de la posiciï¿½n dada.
+void Detalles(nodoBin *nodo);								// Efecto: Imprime los detalles de un elemento del ï¿½rbol.
 
 
 

@@ -6,9 +6,11 @@
 //#include "../TAD_Lista/TADListaSL.h"
 
 /***************************************************************************************
-								OPERACIONES DE CONSTRUCCIÓN
+								OPERACIONES DE CONSTRUCCIï¿½N
 ***************************************************************************************/
 //inicializar el arbol
+int ultimabusqueda;
+
 void Initialize(abb *a)
 {
     a->raiz = NULL;
@@ -31,35 +33,39 @@ void Destroy(abb *a)
     return;
 }
 /***************************************************************************************
-						OPERACIONES DE POSICIONAMIENTO Y BÚSQUEDA
+						OPERACIONES DE POSICIONAMIENTO Y Bï¿½SQUEDA
 ***************************************************************************************/
-// Recibe un ABB y devuelve la posición de la raíz.
+// Recibe un ABB y devuelve la posiciï¿½n de la raï¿½z.
 posicion Root(abb *a)
 {
     return a->raiz;
 }
-// Recibe un ABB a y una posición p, devuelve la posición de el padre.
+// Recibe un ABB a y una posiciï¿½n p, devuelve la posiciï¿½n de el padre.
 posicion Parent(abb *a, posicion p)
 {
     return p->padre;
 }
-// Recibe un ABB a y una posición p, devuelve la posición del hijo derecho.
+// Recibe un ABB a y una posiciï¿½n p, devuelve la posiciï¿½n del hijo derecho.
 posicion RightSon(abb *a, posicion p)
 {
     return p->der;
 }
-// Recibe un ABB a y una posición p, devuelve la posición del hijo izquierdo.
+// Recibe un ABB a y una posiciï¿½n p, devuelve la posiciï¿½n del hijo izquierdo.
 posicion LeftSon(abb *a, posicion p)
 {
     return p->izq;
 }
-// Recibe un ABB a y un elemento e, devuelve la posición del elemento en el árbol.
+// Recibe un ABB a y un elemento e, devuelve la posiciï¿½n del elemento en el ï¿½rbol.
 posicion Search(abb *a, elemento e)
 {
+	ultimabusqueda = 0;
+	a->ultbusq = 0;
 	posicion aux = BuscarPosPalabra(Root(a), e.p);
+	a->ultbusq = ultimabusqueda;
+	//printf("\n  N%cmero de b%csquedas: %d",163,163,a->ultbusq);
 	return aux;
 }
-// Recibe una posicion p y una palabra[101] y recursivamente busca si la palabra se encuentra en el árbol
+// Recibe una posicion p y una palabra[101] y recursivamente busca si la palabra se encuentra en el ï¿½rbol
 posicion BuscarPosPalabra(posicion nodo, char palabra[101])
 {
 	posicion aux = NULL;
@@ -69,21 +75,29 @@ posicion BuscarPosPalabra(posicion nodo, char palabra[101])
 		aux = nodo;
 	}
 	else{
-		if(BuscarPosPalabra(nodo->izq, palabra) != NULL){
+		/*if(BuscarPosPalabra(nodo->izq, palabra) != NULL){
 			aux = BuscarPosPalabra(nodo->izq, palabra);
 		}
 		else{
 			if(BuscarPosPalabra(nodo->der, palabra) != NULL){
 				aux = BuscarPosPalabra(nodo->der, palabra);
 			}
+		}*/
+		if(strcmp(palabra, nodo->dato.p) > 0)
+		{
+			aux = aux = BuscarPosPalabra(nodo->der, palabra);
+		}
+		else{
+			aux = BuscarPosPalabra(nodo->izq, palabra);
 		}
 	}
+	ultimabusqueda++;
 	return aux;
 }
 /***************************************************************************************
 								OPERACIONES DE CONSULTA
 ***************************************************************************************/
-// Retorna si el árbol está vacío.
+// Retorna si el ï¿½rbol estï¿½ vacï¿½o.
 bool Empty(abb *a)
 {
     bool vacio = false;
@@ -93,7 +107,7 @@ bool Empty(abb *a)
     }
     return vacio;
 }
-// Retorna si la posición es válida
+// Retorna si la posiciï¿½n es vï¿½lida
 bool NullNode(abb *a, posicion p)
 {
 	bool nulo = true;
@@ -133,17 +147,17 @@ bool BuscarPosicion(posicion nodo, posicion p)
 	}
 	return validar;
 }
-// Retorna el número de elementos en el ABB.
+// Retorna el nï¿½mero de elementos en el ABB.
 int Size(abb *a)
 {
     return a->tam;
 }
-// Recibe un ABB y una posición p, regresa el elemento en dicha posición.
+// Recibe un ABB y una posiciï¿½n p, regresa el elemento en dicha posiciï¿½n.
 elemento Element(abb *a, posicion p)
 {
 	return p->dato;
 }
-// Recibe una posición e imprime el PreOrden de los elementos del árbol a partir de la posición dada.
+// Recibe una posiciï¿½n e imprime el PreOrden de los elementos del ï¿½rbol a partir de la posiciï¿½n dada.
 void RecorridoPreOrden(nodoBin *nodo)
 {
 	if(nodo == NULL)
@@ -154,7 +168,7 @@ void RecorridoPreOrden(nodoBin *nodo)
 	RecorridoPreOrden(nodo->izq);
 	RecorridoPreOrden(nodo->der);
 }
-// Recibe una posición e imprime el InOrden de los elementos del árbol a partir de la posición dada.
+// Recibe una posiciï¿½n e imprime el InOrden de los elementos del ï¿½rbol a partir de la posiciï¿½n dada.
 void RecorridoInOrden(nodoBin *nodo)
 {
 	if(nodo == NULL)
@@ -165,7 +179,7 @@ void RecorridoInOrden(nodoBin *nodo)
 	printf("%s, ",nodo->dato.p);
 	RecorridoInOrden(nodo->der);
 }
-// Recibe una posición e imprime el PostOrden de los elementos del árbol a partir de la posición dada.
+// Recibe una posiciï¿½n e imprime el PostOrden de los elementos del ï¿½rbol a partir de la posiciï¿½n dada.
 void RecorridoPosOrden(nodoBin *nodo)
 {
 	if(nodo == NULL)
@@ -190,9 +204,9 @@ int altura(nodoBin *nodo)
 	}
 }
 /***************************************************************************************
-							    OPERACIONES DE MODIFICACIÓN
+							    OPERACIONES DE MODIFICACIï¿½N
 ***************************************************************************************/
-// Inserta un elemento en el árbol
+// Inserta un elemento en el ï¿½rbol
 void Add(abb *a, elemento e)
 {
     if(Search(a, e) != NULL)
@@ -244,7 +258,7 @@ void Add(abb *a, elemento e)
 	}
 	a->tam++;
 }
-// Reemplaza la definición de una palabra.
+// Reemplaza la definiciï¿½n de una palabra.
 void ReplaceDefinition(abb *a, posicion p, char def[251])
 {
 	strcpy(p->dato.d, def);
@@ -256,11 +270,12 @@ void Remove(abb *a, posicion p)
 	posicion aux = p;
 	posicion aux2;
 	a->tam--;
-	printf("\n Borrado %s", p->dato.p);
+	
 	if(p->izq == NULL && p->der == NULL)
 	{
 		if(aux == Root(a))
 		{
+			//printf("\n Borrado %s", p->dato.p);
 			a->raiz = NULL;
 			free(aux);
 			return;
@@ -274,6 +289,7 @@ void Remove(abb *a, posicion p)
 		{
 			aux2->der = NULL;
 		}
+		//printf("\n Borrado %s", p->dato.p);
 		//printf("\nTRUENA");
 		free(aux);
 	}
@@ -304,6 +320,7 @@ void Remove(abb *a, posicion p)
 			}
 			aux->der->padre = aux2;
 		}
+		//printf("\n Borrado %s", p->dato.p);
 		free(aux);
 	}
 	else
@@ -313,34 +330,47 @@ void Remove(abb *a, posicion p)
 		{
 			aux = aux->izq;
 		}
-		p->dato = aux->dato;
-		aux->padre->izq = NULL;
-		free(aux);
+		if(aux->padre->izq == aux)
+		{
+			p->dato = aux->dato;
+			aux->padre->izq = NULL;
+			//printf("\n Borrado %s", p->dato.p);
+			
+			free(aux);
+		}
+		else
+		{
+			elemento e2;
+			
+			e2 = p->dato;
+			p->dato = aux->dato;
+			aux->dato = e2;
+			a->tam++;
+			Remove(a, aux);
+		}
+		
+		//p->dato = aux->dato;
+		//aux->padre->izq = NULL;
+		//free(aux);
+
+
 	}
 	
 }
 /***************************************************************************************
-						  OPERACIONES DE CONSULTA (DEPURACIÓN)
+						  OPERACIONES DE CONSULTA (DEPURACIï¿½N)
 ***************************************************************************************/
 void VerLigas(abb *a)
 {
 	int i = 0;
 	posicion aux;	
 	aux=Root(a);
-	/*printf("\n\n raiz=%d",Root(a));
-	printf("\n\n Recorrido InOrden: ");
-	RecorridoInOrden(aux);
-	printf("\n\n Recorrido PreOrden: ");
-	RecorridoPreOrden(aux);
-	printf("\n\n Recorrido PosOrden: ");
-	RecorridoPosOrden(aux);*/
-	//printf("\n  Altura del arbol: %d", altura(Root(a)));
-	printf("\n\n Cantidad de elementos=%d",a->tam);
 	printf("\n*****************************************************************************************************");
 	InOrdenDetallado(aux);
 	printf("\n*****************************************************************************************************");
-	//printf("\n  Altura del arbol: %d", altura(Root(a)));
-	printf("\n\n Cantidad de elementos=%d",a->tam);
+	printf("\n  Ra%cz del %crbol: %s",161, 160,aux->dato.p);
+	printf("\n  Altura del %crbol: %d", 160, altura(Root(a)));
+	printf("\n  Cantidad de elementos=%d",a->tam);
 	return;
 }
 

@@ -68,8 +68,8 @@ int main()
             break;
         case 10:
             printf("Saliendo...\n");
-            //Destroy(&arbol);
-            //VerLigas(&arbol);
+            Destroy(&arbol);
+            VerLigas(&arbol);
             exit(0);
             break;
         default:
@@ -89,7 +89,7 @@ void cargarArchivo(abb *a)
 	char direccion[256];
     elemento e;
     char caracter = 'a';
-    char p[101];
+    char p[101]="";
     char d[251];
     int i = 0;
     int j, renglones = 0;
@@ -142,7 +142,7 @@ void cargarArchivo(abb *a)
     }
     fclose(flujo);
     printf("\n\n   \033[95mSe cargaron %d palabras\033[0m\n", renglones);
-    //printf("\n  Altura del arbol: %d", altura(Root(a)));
+    printf("\n  Altura del arbol: %d", altura(Root(a)));
     printf("\n\n   Presiona cualquier tecla para continuar\n");
     getchar();
 }
@@ -167,7 +167,8 @@ void agregarPalabra(abb *a)
     {
         printf("\nLa palabra \"%s\" ya existe\n", palabra);
         printf("Definici%cn: %s\n", 162, Element(a, p).d);
-        printf("¿Desea modificar la definici%cn? (1/0): ",162);
+        printf("\n  N%cmero de b%csquedas: %d",163,163,a->ultbusq);
+        printf("\n\nÂ¿Desea modificar la definici%cn? (1/0): ",162);
         scanf("%d", &modificar);
         if (modificar == 1)
         {
@@ -184,7 +185,7 @@ void agregarPalabra(abb *a)
     	limpiarBuffer();
     	fgets(e.d, 251, stdin);
     	Add(a, e);
-    	//printf("\n  Altura del arbol: %d", altura(Root(a)));
+    	printf("\n  Altura del arbol: %d", altura(Root(a)));
     	printf("\n\n   \033[95mSe carg%c 1 palabra\033[0m\n", 162);
 	}
 	//getchar();
@@ -217,6 +218,7 @@ void buscarPalabra(abb *a)
     {
     	printf("\n\n   La palabra \"%s\" \033[31mNO\033[0m se encontr%c\n", palabra, 162);
 	}
+    printf("\n  N%cmero de b%csquedas: %d",163,163,a->ultbusq);
 	printf("\n\n   Presiona cualquier tecla para continuar\n");
 	getchar();
 }
@@ -234,11 +236,12 @@ void modificarPalabra(abb *a)
     scanf("%s", palabra);
     strcpy(e.p, palabra);
     p = Search(a, e);
+    
     if (p != NULL)
     {
     	printf("\nLa palabra \"%s\" se encontr%c\n", palabra, 162);
         printf("Definici%cn: %s\n", 162, Element(a, p).d);
-        
+        printf("\n  N%cmero de b%csquedas: %d",163,163,a->ultbusq);
         printf("\nNueva definici%cn: ", 162);
         limpiarBuffer();
         fgets(e.d, 251, stdin);
@@ -248,7 +251,10 @@ void modificarPalabra(abb *a)
     else
     {
     	printf("\n\n   La palabra \"%s\" \033[31mNO\033[0m se encontr%c\n", palabra, 162);
+        getchar();
 	}
+    
+
 	printf("\n\n   Presiona cualquier tecla para continuar\n");
 	//getchar();
 }
@@ -275,6 +281,8 @@ void eliminarPalabra(abb *a)
     {
     	printf("\n\n   La palabra \"%s\" \033[31mNO\033[0m se encontr%c\n", palabra, 162);
 	}
+    printf("\n  N%cmero de b%csquedas: %d",163,163,a->ultbusq);
+    printf("\n  Altura del arbol: %d", altura(Root(a)));
 	printf("\n\n   Presiona cualquier tecla para continuar\n");
 	getchar();
 }
@@ -335,7 +343,7 @@ void dibujarMenu()
     printf("10. Salir\n\n");
 }
 
-// Función para limpiar el Buffer
+// Funciï¿½n para limpiar el Buffer
 void limpiarBuffer()
 {
     int temp;
